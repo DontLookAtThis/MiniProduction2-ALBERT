@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<ItemGroup>
+		<None Include="..\..\ManagementGame.uproject" />
+		<Filter Include="Source">
+			<UniqueIdentifier>{04565817-CFDB-4578-877B-9174CB9874D3}</UniqueIdentifier>
+		</Filter>
+		<None Include="..\..\Source\ManagementGame.Target.cs">
+			<Filter>Source</Filter>
+		</None >
+		<None Include="..\..\Source\ManagementGameEditor.Target.cs">
+			<Filter>Source</Filter>
+		</None >
+		<Filter Include="Config">
+			<UniqueIdentifier>{B18C26EC-1CEE-4C66-ACD4-2EC37FA7E86F}</UniqueIdentifier>
+		</Filter>
+		<None Include="..\..\Config\DefaultEditor.ini">
+			<Filter>Config</Filter>
+		</None >
+		<None Include="..\..\Config\DefaultEditorPerProjectUserSettings.ini">
+			<Filter>Config</Filter>
+		</None >
+		<None Include="..\..\Config\DefaultEngine.ini">
+			<Filter>Config</Filter>
+		</None >
+		<None Include="..\..\Config\DefaultGame.ini">
+			<Filter>Config</Filter>
+		</None >
+		<None Include="..\..\Config\DefaultInput.ini">
+			<Filter>Config</Filter>
+		</None >
+		<Filter Include="Source\ManagementGame">
+			<UniqueIdentifier>{3A789BE1-EB38-4E79-B714-C364510A8E5B}</UniqueIdentifier>
+		</Filter>
+		<ClCompile Include="..\..\Source\ManagementGame\BoxMechanics.cpp">
+			<Filter>Source\ManagementGame</Filter>
+		</ClCompile >
+		<ClInclude Include="..\..\Source\ManagementGame\BoxMechanics.h">
+			<Filter>Source\ManagementGame</Filter>
+		</ClInclude >
+		<ClCompile Include="..\..\Source\ManagementGame\ConveyorBeltMechanics.cpp">
+			<Filter>Source\ManagementGame</Filter>
+		</ClCompile >
+		<ClInclude Include="..\..\Source\ManagementGame\ConveyorBeltMechanics.h">
+			<Filter>Source\ManagementGame</Filter>
+		</ClInclude >
+		<ClCompile Include="..\..\Source\ManagementGame\ItemBin.cpp">
+			<Filter>Source\ManagementGame</Filter>
+		</ClCompile >
+		<ClInclude Include="..\..\Source\ManagementGame\ItemBin.h">
+			<Filter>Source\ManagementGame</Filter>
+		</ClInclude >
+		<None Include="..\..\Source\ManagementGame\ManagementGame.Build.cs">
+			<Filter>Source\ManagementGame</Filter>
+		</None >
+		<ClCompile Include="..\..\Source\ManagementGame\ManagementGame.cpp">
+			<Filter>Source\ManagementGame</Filter>
+		</ClCompile >
+		<ClInclude Include="..\..\Source\ManagementGame\ManagementGame.h">
+			<Filter>Source\ManagementGame</Filter>
+		</ClInclude >
+		<ClCompile Include="..\..\Source\ManagementGame\ManagementGameCharacter.cpp">
+			<Filter>Source\ManagementGame</Filter>
+		</ClCompile >
+		<ClInclude Include="..\..\Source\ManagementGame\ManagementGameCharacter.h">
+			<Filter>Source\ManagementGame</Filter>
+		</ClInclude >
+		<ClCompile Include="..\..\Source\ManagementGame\ManagementGameGameMode.cpp">
+			<Filter>Source\ManagementGame</Filter>
+		</ClCompile >
+		<ClInclude Include="..\..\Source\ManagementGame\ManagementGameGameMode.h">
+			<Filter>Source\ManagementGame</Filter>
+		</ClInclude >
+		<ClCompile Include="..\..\Source\ManagementGame\ManagementGamePlayerController.cpp">
+			<Filter>Source\ManagementGame</Filter>
+		</ClCompile >
+		<ClInclude Include="..\..\Source\ManagementGame\ManagementGamePlayerController.h">
+			<Filter>Source\ManagementGame</Filter>
+		</ClInclude >
+		<ClCompile Include="..\..\Source\ManagementGame\MyPawn.cpp">
+			<Filter>Source\ManagementGame</Filter>
+		</ClCompile >
+		<ClInclude Include="..\..\Source\ManagementGame\MyPawn.h">
+			<Filter>Source\ManagementGame</Filter>
+		</ClInclude >
+		<ClCompile Include="..\..\Source\ManagementGame\ParcelGrabber.cpp">
+			<Filter>Source\ManagementGame</Filter>
+		</ClCompile >
+		<ClInclude Include="..\..\Source\ManagementGame\ParcelGrabber.h">
+			<Filter>Source\ManagementGame</Filter>
+		</ClInclude >
+	</ItemGroup>
+</Project>
