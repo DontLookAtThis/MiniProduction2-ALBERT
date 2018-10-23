@@ -57,6 +57,14 @@ AManagementGameCharacter::AManagementGameCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
 }
+
+
+void AManagementGameCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+}
+
 // Called to bind functionality to input
 void AManagementGameCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
@@ -71,14 +79,25 @@ void AManagementGameCharacter::MoveForward(float AxisValue)
 {
 	// Find out which way is "forward" and record that the player wants to move that way.
 	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::X);
-	AddMovementInput(Direction, AxisValue);
+	Direction *= AxisValue;
+	MovementDirection += Direction;
+	UE_LOG(LogTemp, Warning, TEXT("X %s"), *Direction.ToString());
 }
 
 void AManagementGameCharacter::MoveRight(float AxisValue)
 {
 	// Find out which way is "right" and record that the player wants to move that way.
 	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
-	AddMovementInput(Direction, AxisValue);
+	Direction *= AxisValue;
+	MovementDirection += Direction;
+	UE_LOG(LogTemp, Warning, TEXT("Y %s"), *Direction.ToString());
+}
+
+void AManagementGameCharacter::CardinalMovement()
+{
+	//UE_LOG(LogTemp, Warning, TEXT("Direction %s"), *MovementDirection.ToString());
+	AddMovementInput(MovementDirection, 1.0f);
+	MovementDirection = FVector(0, 0, 0);
 }
 
 
@@ -86,7 +105,7 @@ void AManagementGameCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
 
-	
+	CardinalMovement();
 
 	//if (CursorToWorld != nullptr)
 	//{
