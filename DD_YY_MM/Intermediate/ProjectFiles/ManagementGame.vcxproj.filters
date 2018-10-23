@@ -4,7 +4,7 @@
 	<ItemGroup>
 		<None Include="..\..\ManagementGame.uproject" />
 		<Filter Include="Source">
-			<UniqueIdentifier>{04565817-CFDB-4578-877B-9174CB9874D3}</UniqueIdentifier>
+			<UniqueIdentifier>{136DED3E-FC79-4D28-811B-AF499DFFB3B1}</UniqueIdentifier>
 		</Filter>
 		<None Include="..\..\Source\ManagementGame.Target.cs">
 			<Filter>Source</Filter>
@@ -13,7 +13,7 @@
 			<Filter>Source</Filter>
 		</None >
 		<Filter Include="Config">
-			<UniqueIdentifier>{B18C26EC-1CEE-4C66-ACD4-2EC37FA7E86F}</UniqueIdentifier>
+			<UniqueIdentifier>{C11FB305-E0A2-42D6-AF35-E1DF1FBD54C5}</UniqueIdentifier>
 		</Filter>
 		<None Include="..\..\Config\DefaultEditor.ini">
 			<Filter>Config</Filter>
@@ -31,7 +31,7 @@
 			<Filter>Config</Filter>
 		</None >
 		<Filter Include="Source\ManagementGame">
-			<UniqueIdentifier>{3A789BE1-EB38-4E79-B714-C364510A8E5B}</UniqueIdentifier>
+			<UniqueIdentifier>{D526A109-F9AF-40F5-AC84-6BEE7ADC7B46}</UniqueIdentifier>
 		</Filter>
 		<ClCompile Include="..\..\Source\ManagementGame\BoxMechanics.cpp">
 			<Filter>Source\ManagementGame</Filter>
