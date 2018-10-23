@@ -1,3 +1,0 @@
-D:\Users\james.dev7362\Documents\MiniProduction2-ALBERT\DD_YY_MM\Source\ManagementGame\ManagementGame.Build.cs
-D:\Users\james.dev7362\Documents\MiniProduction2-ALBERT\DD_YY_MM\Source\ManagementGame.Target.cs
-D:\Users\james.dev7362\Documents\MiniProduction2-ALBERT\DD_YY_MM\Source\ManagementGameEditor.Target.cs
