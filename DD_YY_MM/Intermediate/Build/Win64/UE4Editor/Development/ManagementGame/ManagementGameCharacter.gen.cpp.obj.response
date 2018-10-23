@@ -23,9 +23,9 @@
 /wd4838
 /w44668
 /I D:\Epic\UE_4.19\Engine\Source
-/I D:\Users\michael.xu7480\Documents\Due-Date\DD_YY_MM\Source
-/I D:\Users\michael.xu7480\Documents\Due-Date\DD_YY_MM\Intermediate\Build\Win64\UE4Editor\Inc\ManagementGame
-/I D:\Users\michael.xu7480\Documents\Due-Date\DD_YY_MM\Source\ManagementGame
+/I D:\Users\michael.xu7480\Documents\MiniProduction2-ALBERT\DD_YY_MM\Source
+/I D:\Users\michael.xu7480\Documents\MiniProduction2-ALBERT\DD_YY_MM\Intermediate\Build\Win64\UE4Editor\Inc\ManagementGame
+/I D:\Users\michael.xu7480\Documents\MiniProduction2-ALBERT\DD_YY_MM\Source\ManagementGame
 /I D:\Epic\UE_4.19\Engine\Source\Runtime\Core\Public
 /I D:\Epic\UE_4.19\Engine\Source\Runtime\Core\Public\Internationalization
 /I D:\Epic\UE_4.19\Engine\Source\Runtime\Core\Public\Async
@@ -366,9 +366,9 @@
 /FI"D:\Epic\UE_4.19\Engine\Intermediate\Build\Win64\UE4Editor\Development\Engine\SharedPCH.Engine.h"
 /Yu"D:\Epic\UE_4.19\Engine\Intermediate\Build\Win64\UE4Editor\Development\Engine\SharedPCH.Engine.h"
 /Fp"D:\Epic\UE_4.19\Engine\Intermediate\Build\Win64\UE4Editor\Development\Engine\SharedPCH.Engine.h.pch"
-"D:\Users\michael.xu7480\Documents\Due-Date\DD_YY_MM\Intermediate\Build\Win64\UE4Editor\Inc\ManagementGame\ManagementGameCharacter.gen.cpp"
-/FI"D:\Users\michael.xu7480\Documents\Due-Date\DD_YY_MM\Intermediate\Build\Win64\UE4Editor\Development\ManagementGame\Definitions.ManagementGame.h"
-/Fo"D:\Users\michael.xu7480\Documents\Due-Date\DD_YY_MM\Intermediate\Build\Win64\UE4Editor\Development\ManagementGame\ManagementGameCharacter.gen.cpp.obj"
+"D:\Users\michael.xu7480\Documents\MiniProduction2-ALBERT\DD_YY_MM\Intermediate\Build\Win64\UE4Editor\Inc\ManagementGame\ManagementGameCharacter.gen.cpp"
+/FI"D:\Users\michael.xu7480\Documents\MiniProduction2-ALBERT\DD_YY_MM\Intermediate\Build\Win64\UE4Editor\Development\ManagementGame\Definitions.ManagementGame.h"
+/Fo"D:\Users\michael.xu7480\Documents\MiniProduction2-ALBERT\DD_YY_MM\Intermediate\Build\Win64\UE4Editor\Development\ManagementGame\ManagementGameCharacter.gen.cpp.obj"
 /TP
 /GR-
 /W4
