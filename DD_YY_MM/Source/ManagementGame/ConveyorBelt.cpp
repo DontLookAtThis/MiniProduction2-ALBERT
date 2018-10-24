@@ -24,21 +24,21 @@ void UConveyorBelt::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, cl
 }
 
 void UConveyorBelt::OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	// Get overlappign actors again, to acessing non existant entities
-	GetOwner()->GetOverlappingActors(FoundActors);	
+{	
+	// Remove the actor from the list of overlapping actors
+	FoundActors.Remove(OtherActor);	
 }
 
 // Called when the game starts
 void UConveyorBelt::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	// ...	
 	m_pMyMesh = GetOwner()->FindComponentByClass<UStaticMeshComponent>();
 	m_pMyMesh->bGenerateOverlapEvents = true;
 	m_pMyMesh->OnComponentBeginOverlap.AddDynamic(this, &UConveyorBelt::OnOverlapBegin);
 	m_pMyMesh->OnComponentEndOverlap.AddDynamic(this, &UConveyorBelt::OnOverlapEnd);
-	// ...	
-	
 }
 
 
@@ -58,7 +58,7 @@ void UConveyorBelt::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 			FVector location = FoundActors[i]->GetActorLocation();
 			FVector forward = GetOwner()->GetActorForwardVector();
 
-			location += forward * 1.5f;
+			location -= forward * 1.5f;
 			FoundActors[i]->SetActorLocation(location);
 		}		
 	}
