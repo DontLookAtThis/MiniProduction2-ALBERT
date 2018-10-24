@@ -40,12 +40,17 @@ void UParcelGrabber::BeginPlay()
 	{
 		UE_LOG(LogTemp, Error, TEXT("PhysicsHandle ERROR : Owner = %s"), *GetOwner()->GetName());
 	}	
+	m_fThrowForce = m_fThrowForceDefault;
+	bFirstRelease = true;
+	bThrowCharging = false;
 }
 
 // Called every frame
 void UParcelGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	m_fDeltaTime = DeltaTime;
+	ChargeThrow();
 	if (m_PhysicsHandle)
 	{
 		/*DrawDebugLine(
@@ -101,13 +106,9 @@ void UParcelGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 void UParcelGrabber::OnSetGrabPressed()
 {	
 	// If holding a box, do yeet stuff
-	if (bHolding)
+	if (bHolding && bFirstRelease)
 	{
-		// Throw the box
-		YeetAction();
-
-		//plays the throwing sound
-		UGameplayStatics::PlaySound2D(m_PlayerCharacter, m_pYeetSound, 1.0f, 2.0f, 0.6f);
+		bThrowCharging = true;
 	}
 	// Otherwise, perform grabbing processes
 	else
@@ -121,7 +122,19 @@ void UParcelGrabber::OnSetGrabPressed()
 }
 void UParcelGrabber::OnSetGrabRelease()
 {
-	bGrabbing = false;	
+	if (bHolding && !bFirstRelease)
+	{
+		bFirstRelease = true;
+	}
+	else if (bHolding && bFirstRelease)
+	{
+		YeetAction();
+		//plays the throwing sound
+		UGameplayStatics::PlaySound2D(m_PlayerCharacter, m_pYeetSound, 1.0f, 2.0f, 0.6f);
+	}
+	bGrabbing = false;
+	bThrowCharging = false;
+	m_fThrowForce = m_fThrowForceDefault;
 }
 
 void UParcelGrabber::YeetAction()
@@ -147,7 +160,7 @@ void UParcelGrabber::YeetAction()
 			// Apply forces to the thrown item
 			FVector YEET = m_PlayerCharacter->GetActorForwardVector();
 			YEET.Z += 0.5f;
-			thrownitem->AddImpulse(YEET * 1500.0f, NAME_None, true);
+			thrownitem->AddImpulse(YEET * m_fThrowForce, NAME_None, true);
 			thrownitem->GetOwner()->FindComponentByClass<UBoxMechanics>()->bPickedUp = false;
 		}
 	}
@@ -202,6 +215,7 @@ void UParcelGrabber::Grab()
 			);
 						
 			bHolding = true;
+			bFirstRelease = false;
 			//plays the grab sound
 			UGameplayStatics::PlaySound2D(m_PlayerCharacter, m_pGrabSound, 1.0f, 2.0f, 0.6f);
 		}
@@ -260,6 +274,17 @@ FHitResult UParcelGrabber::GetFirstPhysicsBodyInReach()
 	else
 	{
 		return FHitResult();
+	}
+}
+
+void UParcelGrabber::ChargeThrow()
+{
+	if (bThrowCharging)
+	{
+		if (m_fThrowForce < (m_fThrowForceDefault + m_fForceIncreasePersec * 3.0f))
+		{
+			m_fThrowForce += (m_fDeltaTime * m_fForceIncreasePersec);
+		}
 	}
 }
 
