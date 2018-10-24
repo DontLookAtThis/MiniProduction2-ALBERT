@@ -17,6 +17,8 @@ public:
 	// Called every frame.
 	virtual void Tick(float DeltaSeconds) override;
 
+	virtual void BeginPlay() override;
+
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
@@ -44,5 +46,8 @@ private:
 	void MoveForward(float AxisValue);
 	void MoveRight(float AxisValue);
 	void CardinalMovement();
+
+	FVector MovementDirection;
+	float m_fMoveSpeed;
 };
 
