@@ -3,6 +3,7 @@
 #include "ConveyorBelt.h"
 #include "GameFramework/CharacterMovementComponent.h" // means no red underline on get owner
 #include "Components/StaticMeshComponent.h"
+#include "BoxMechanics.h"
 
 // Sets default values for this component's properties
 UConveyorBelt::UConveyorBelt()
@@ -56,7 +57,7 @@ void UConveyorBelt::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 		{
 			// Move the actors along the conveyer
 			FVector location = FoundActors[i]->GetActorLocation();
-			FVector forward = GetOwner()->GetActorForwardVector();
+			FVector forward = GetOwner()->GetActorForwardVector();			
 
 			location -= forward * 1.5f;
 			FoundActors[i]->SetActorLocation(location);
