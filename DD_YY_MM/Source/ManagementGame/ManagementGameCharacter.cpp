@@ -11,6 +11,8 @@
 #include "HeadMountedDisplayFunctionLibrary.h"
 #include "Materials/Material.h"
 #include "Engine/World.h"
+#include "ParcelGrabber.h"
+
 
 AManagementGameCharacter::AManagementGameCharacter()
 {
@@ -62,7 +64,7 @@ AManagementGameCharacter::AManagementGameCharacter()
 void AManagementGameCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
+	grabber = FindComponentByClass<UParcelGrabber>();
 }
 
 // Called to bind functionality to input
@@ -73,6 +75,9 @@ void AManagementGameCharacter::SetupPlayerInputComponent(class UInputComponent* 
 	// Set up "movement" bindings.
 	PlayerInputComponent->BindAxis("MoveForward", this, &AManagementGameCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AManagementGameCharacter::MoveRight);
+
+	PlayerInputComponent->BindAction("Grab&Release", IE_Pressed, this, &AManagementGameCharacter::OnSetGrabPressed);
+	PlayerInputComponent->BindAction("Grab&Release", IE_Released, this, &AManagementGameCharacter::OnSetGrabRelease);
 }
 
 void AManagementGameCharacter::MoveForward(float AxisValue)
@@ -98,6 +103,22 @@ void AManagementGameCharacter::CardinalMovement()
 	//UE_LOG(LogTemp, Warning, TEXT("Direction %s"), *MovementDirection.ToString());
 	AddMovementInput(MovementDirection, 1.0f);
 	MovementDirection = FVector(0, 0, 0);
+}
+
+void AManagementGameCharacter::OnSetGrabPressed()
+{
+	if(grabber)
+	{
+		grabber->OnSetGrabPressed();
+	}
+}
+
+void AManagementGameCharacter::OnSetGrabRelease()
+{
+	if (grabber)
+	{
+		grabber->OnSetGrabRelease();
+	}
 }
 
 
