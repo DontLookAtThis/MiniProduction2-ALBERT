@@ -66,46 +66,17 @@ void UBoxMechanics::BeginPlay()
 // Called every frame
 void UBoxMechanics::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	if (bOnConvey && !bPickedUp)
-	{
-		FVector loca = GetOwner()->GetActorLocation();
-		FVector Movement(-100000.0f, 0.0f, 0.0f);
-		//loca = loca + Movement;
-		loca.X += 2.0f;
-		GetOwner()->SetActorLocation(loca);
-		//m_pMyMesh->AddForce(Movement);
-	}
-	//BreakItem();
-	//if (bOnConvey)
-	//{
-	//	UE_LOG(LogTemp, Error, TEXT("boolOncConvey: True"));
-	//}
-	//else
-	//{
-	//	UE_LOG(LogTemp, Error, TEXT("boolOncConvey: False"));
-	//}
-	//if (bPickedUp)
-	//{
-	//	UE_LOG(LogTemp, Error, TEXT("boolPickedUP : True"));
-	//}
-	//else
-	//{
-	//	UE_LOG(LogTemp, Error, TEXT("boolPickedUP : False"));
-	//}
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);	
 }
 
 void UBoxMechanics::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	UE_LOG(LogTemp, Error, TEXT("Box On Belt;"), *GetOwner()->GetName());
-	bOnConvey = true; 
 	m_pMyMesh->SetSimulatePhysics(false);
 }
 
 void UBoxMechanics::OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	bOnConvey = false;
+{	
 	m_pMyMesh->SetSimulatePhysics(true);
 }
 

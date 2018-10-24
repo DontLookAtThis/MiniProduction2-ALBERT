@@ -19,8 +19,8 @@ void EmptyLinkFunctionForGeneratedCodeManagementGame_init() {}
 			static const UE4CodeGen_Private::FPackageParams PackageParams = {
 				"/Script/ManagementGame",
 				PKG_CompiledIn | 0x00000000,
-				0xFA2C231D,
-				0x1387DF08,
+				0xD3CA633A,
+				0xEFE3BFD4,
 				nullptr, 0,
 				METADATA_PARAMS(nullptr, 0)
 			};
