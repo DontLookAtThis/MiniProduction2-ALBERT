@@ -13,6 +13,7 @@
 #include <iostream>
 #include "BoxMechanics.h"
 #include <memory>
+
 //#include "BoxMechanics.h"
 // Sets default values for this component's properties
 UParcelGrabber::UParcelGrabber()
@@ -33,9 +34,8 @@ void UParcelGrabber::BeginPlay()
 {
 	Super::BeginPlay();
 	m_PlayerCharacter = GetWorld()->GetFirstPlayerController()->GetCharacter();
-	m_pInputComp = GetOwner()->FindComponentByClass<UInputComponent>();
-	// Find physics handle
-	m_PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
+	m_pInputComp = GetOwner()->FindComponentByClass<UInputComponent>();	
+	m_PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>(); // Find physics handle
 	if (!m_PhysicsHandle)
 	{
 		UE_LOG(LogTemp, Error, TEXT("PhysicsHandle ERROR : Owner = %s"), *GetOwner()->GetName());
@@ -43,95 +43,7 @@ void UParcelGrabber::BeginPlay()
 	if (m_pInputComp)
 	{
 		m_pInputComp->BindAction("Grab&Release", IE_Pressed, this, &UParcelGrabber::OnSetGrabPressed);
-		m_pInputComp->BindAction("Grab&Release", IE_Released, this, &UParcelGrabber::OnSetGrabRelease);
-
-		m_pInputComp->BindAction("Yeet", IE_Pressed, this, &UParcelGrabber::OnSetYeetPressed);
-		//m_pInputComp->BindAction("Yeet", IE_Released, this, &UParcelGrabber::OnSetYeetReleased);
-	}
-
-	
-}
-
-void UParcelGrabber::OnSetGrabPressed()
-{
-	UPrimitiveComponent* thrownitem = m_PhysicsHandle->GrabbedComponent;
-	if (bGrabbing == false && bThrown == false && !thrownitem)
-	{
-		bGrabbing = true;
-
-
-	}
-}
-void UParcelGrabber::OnSetGrabRelease()
-{
-	bGrabbing = false;
-	if (bThrown == true)
-	{
-		OnSetYeetReleased();
-
-		//plays the throwing sound
-		UGameplayStatics::PlaySound2D(m_PlayerCharacter, m_pYeetSound, 1.0f, 2.0f, 0.6f);
-	}
-}
-
-void UParcelGrabber::OnSetYeetPressed()
-{
-	UPrimitiveComponent* thrownitem = m_PhysicsHandle->GrabbedComponent;
-	if (bThrown == false && thrownitem && bGrabbing == false)
-	{
-		thrownitem->GetOwner()->FindComponentByClass<UBoxMechanics>()->iHealth--;
-		bThrown = true;
-		if (m_PhysicsHandle->GrabbedComponent != nullptr)
-		{
-			UPrimitiveComponent* GrabbedComp = m_PhysicsHandle->GrabbedComponent;
-			m_PhysicsHandle->ReleaseComponent();
-			if (thrownitem)
-			{
-				thrownitem->SetSimulatePhysics(false);
-				thrownitem->SetSimulatePhysics(true);
-			}
-			FVector YEET = m_PlayerCharacter->GetActorForwardVector();
-			YEET.Z += 0.5f;
-			GrabbedComp->AddImpulse(YEET * 1500.0f, NAME_None, true);
-			GrabbedComp->GetOwner()->FindComponentByClass<UBoxMechanics>()->bPickedUp = false;
-		}
-	}
-}
-
-void UParcelGrabber::OnSetYeetReleased()
-{
-	bThrown = false;
-}
-
-void UParcelGrabber::Grab()
-{
-	UPrimitiveComponent* thrownitem = m_PhysicsHandle->GrabbedComponent;
-	m_PhysicsHandle->ReleaseComponent();
-	if (thrownitem)
-	{
-		thrownitem->SetSimulatePhysics(false);
-		thrownitem->SetSimulatePhysics(true);
-	}
-	auto HitResult = GetFirstPhysicsBodyInReach();
-	auto ComponentToGrab = HitResult.GetComponent();
-	auto ActorHit = HitResult.GetActor();
-	
-	if (ActorHit)
-	{
-		if (ActorHit->FindComponentByClass<UBoxMechanics>())
-		{
-			ActorHit->FindComponentByClass<UBoxMechanics>()->bPickedUp = true;
-			ActorHit->FindComponentByClass<UStaticMeshComponent>()->SetSimulatePhysics(true);
-			UE_LOG(LogTemp, Warning, TEXT("Grabbing parcel."));
-			m_PhysicsHandle->GrabComponent(
-				ComponentToGrab,
-				NAME_None,
-				ComponentToGrab->GetOwner()->GetActorLocation(),
-				true // allow rotation
-			);
-			//plays the grab sound
-			UGameplayStatics::PlaySound2D(m_PlayerCharacter, m_pGrabSound, 1.0f, 2.0f, 0.6f);
-		}
+		m_pInputComp->BindAction("Grab&Release", IE_Released, this, &UParcelGrabber::OnSetGrabRelease);		
 	}	
 }
 
@@ -152,33 +64,130 @@ void UParcelGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 		10.0f
 		);*/
 
-		if (m_PhysicsHandle->GrabbedComponent)
+		// Check if we're holding something
+		if (bHolding)
 		{
-			// Calculate the end of the raycast
-			FVector PlayerForward = m_PlayerCharacter->GetActorForwardVector();
-			FVector PlayerPosition = m_PlayerCharacter->GetActorLocation();
-			FVector LineTraceEnd = PlayerPosition + PlayerForward * m_fHoldReach;
-
-			UE_LOG(LogTemp, Warning, TEXT("GrabbedComponent FName: %s"), *m_PhysicsHandle->GrabbedComponent->GetReadableName());
-			//m_PhysicsHandle->GrabbedComponent->GetReadableName
-
-			// Set the targets location to the end of the raycast
-			m_PhysicsHandle->SetTargetLocation(FVector(LineTraceEnd.X, LineTraceEnd.Y, LineTraceEnd.Z + 50.0f));
-			m_PhysicsHandle->SetTargetRotation(m_PlayerCharacter->GetActorRotation());
-
-			// If the compenent we're holding is being destroyed, release it so we can go pick up another
-			if (m_PhysicsHandle->GrabbedComponent->IsBeingDestroyed())
+			// Check if we're holding something			
+			if (m_PhysicsHandle->GrabbedComponent)
 			{
-				m_PhysicsHandle->ReleaseComponent();
+				// Calculate the end of the raycast
+				FVector PlayerForward = m_PlayerCharacter->GetActorForwardVector();
+				FVector PlayerPosition = m_PlayerCharacter->GetActorLocation();
+				FVector LineTraceEnd = PlayerPosition + PlayerForward * m_fHoldReach;
+				UE_LOG(LogTemp, Warning, TEXT("GrabbedComponent FName: %s"), *m_PhysicsHandle->GrabbedComponent->GetReadableName());				
+
+				// Set the targets location to the end of the raycast
+				m_PhysicsHandle->SetTargetLocation(FVector(LineTraceEnd.X, LineTraceEnd.Y, LineTraceEnd.Z + 50.0f));
+				m_PhysicsHandle->SetTargetRotation(m_PlayerCharacter->GetActorRotation());
+
+				// If the compenent we're holding is being destroyed, release it so we can go pick up another
+				if (m_PhysicsHandle->GrabbedComponent->IsBeingDestroyed())
+				{
+					m_PhysicsHandle->ReleaseComponent();
+				}
+			}
+			else
+			{
+				// If holding is true but we're not holding anything, set it to false
+				bHolding = false;
 			}
 		}
-		else if(bGrabbing)
-		{			
-			// If we haven't grabbed anything, try grab something!
+
+		// Handle grabbing processes
+		if (bGrabbing)
+		{
 			Grab();
 		}
 	}
 }
+
+void UParcelGrabber::OnSetGrabPressed()
+{	
+	// If holding a box, do yeet stuff
+	if (bHolding)
+	{
+		// Throw the box
+		YeetAction();
+
+		//plays the throwing sound
+		UGameplayStatics::PlaySound2D(m_PlayerCharacter, m_pYeetSound, 1.0f, 2.0f, 0.6f);
+	}
+	// Otherwise, perform grabbing processes
+	else
+	{
+		if (bGrabbing == false)
+		{
+			bGrabbing = true;
+		}
+	}
+	
+}
+void UParcelGrabber::OnSetGrabRelease()
+{
+	bGrabbing = false;	
+}
+
+void UParcelGrabber::YeetAction()
+{
+	UPrimitiveComponent* thrownitem = m_PhysicsHandle->GrabbedComponent;
+	if (thrownitem)
+	{		
+		if (m_PhysicsHandle->GrabbedComponent != nullptr)
+		{
+			// Decrement Box HP and set thrown true and held false
+			thrownitem->GetOwner()->FindComponentByClass<UBoxMechanics>()->iHealth--;			
+			bHolding = false;
+			
+			// Release the component and reset physics
+			m_PhysicsHandle->ReleaseComponent();
+			if (thrownitem)
+			{
+				thrownitem->SetSimulatePhysics(false);
+				thrownitem->SetSimulatePhysics(true);
+			}
+
+			// Apply forces to the thrown item
+			FVector YEET = m_PlayerCharacter->GetActorForwardVector();
+			YEET.Z += 0.5f;
+			thrownitem->AddImpulse(YEET * 1500.0f, NAME_None, true);
+			thrownitem->GetOwner()->FindComponentByClass<UBoxMechanics>()->bPickedUp = false;
+		}
+	}
+}
+
+void UParcelGrabber::Grab()
+{	
+	// Reset grabbed object
+	m_PhysicsHandle->ReleaseComponent();
+
+	// Raycast to find objects to grab
+	auto HitResult = GetFirstPhysicsBodyInReach();
+	auto ComponentToGrab = HitResult.GetComponent();
+	auto ActorHit = HitResult.GetActor();
+	
+	// If a hit was made, check that its a box and grab it
+	if (ActorHit)
+	{
+		if (ActorHit->FindComponentByClass<UBoxMechanics>())
+		{
+			ActorHit->FindComponentByClass<UBoxMechanics>()->bPickedUp = true;
+			ActorHit->FindComponentByClass<UStaticMeshComponent>()->SetSimulatePhysics(true);
+			UE_LOG(LogTemp, Warning, TEXT("Grabbing parcel."));
+			m_PhysicsHandle->GrabComponent(
+				ComponentToGrab,
+				NAME_None,
+				ComponentToGrab->GetOwner()->GetActorLocation(),
+				true // allow rotation
+			);
+						
+			bHolding = true;
+			//plays the grab sound
+			UGameplayStatics::PlaySound2D(m_PlayerCharacter, m_pGrabSound, 1.0f, 2.0f, 0.6f);
+		}
+	}	
+}
+
+
 
 FHitResult UParcelGrabber::GetFirstPhysicsBodyInReach()
 {
@@ -187,21 +196,21 @@ FHitResult UParcelGrabber::GetFirstPhysicsBodyInReach()
 	FVector LineTraceEnd = PlayerPosition + PlayerForward * m_fReach;	
 
 	// Debug Box Trace
-	//DrawDebugBox(
-	//	GetWorld(),
-	//	LineTraceEnd,
-	//	FVector(50, 50, 50),
-	//	FColor::Purple,
-	//	false,
-	//	-1,
-	//	0,
-	//	10.0f
-	//);
+	DrawDebugBox(
+		GetWorld(),
+		LineTraceEnd,
+		FVector(50, 50, 50),
+		FColor::Purple,
+		false,
+		-1,
+		0,
+		10.0f
+	);
 
 	// Setup query parameters
 	FCollisionQueryParams TraceParameters(FName(TEXT("")), false, GetOwner());
 
-	/// Box-trace (ray-cast) out to reach distance
+	// Box-trace (ray-cast) out to reach distance
 	FHitResult LineTraceHit;
 	FCollisionShape Shape = FCollisionShape::MakeBox(FVector(50.0f, 50.0f, 50.0f));
 	GetWorld()->SweepSingleByObjectType(
@@ -211,7 +220,7 @@ FHitResult UParcelGrabber::GetFirstPhysicsBodyInReach()
 		FQuat(),
 		ECollisionChannel::ECC_PhysicsBody,
 		Shape,
-		FCollisionQueryParams()			
+		FCollisionQueryParams::DefaultQueryParam			
 	);	
 
 	AActor* ActorHit = LineTraceHit.GetActor();

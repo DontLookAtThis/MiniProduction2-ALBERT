@@ -17,12 +17,13 @@ public:
 	// Sets default values for this component's properties
 	UParcelGrabber();
 	bool bGrabbing = false;
+	bool bHolding = false;
 	bool bThrown = false;
 	int iGrabTimer;
 	void OnSetGrabPressed();
 	void OnSetGrabRelease();
-	void OnSetYeetPressed();
-	void OnSetYeetReleased();
+	void YeetAction();
+	
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
