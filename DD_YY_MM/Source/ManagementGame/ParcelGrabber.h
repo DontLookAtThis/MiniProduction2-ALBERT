@@ -23,6 +23,8 @@ public:
 	void OnSetGrabPressed();
 	void OnSetGrabRelease();
 	void YeetAction();
+	UFUNCTION(BlueprintCallable, Category = "BoxHandle")
+		void DropAction();
 	
 protected:
 	// Called when the game starts

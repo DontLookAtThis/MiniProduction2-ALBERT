@@ -33,17 +33,12 @@ UParcelGrabber::UParcelGrabber()
 void UParcelGrabber::BeginPlay()
 {
 	Super::BeginPlay();
-	m_PlayerCharacter = GetWorld()->GetFirstPlayerController()->GetCharacter();
+	m_PlayerCharacter = Cast<ACharacter>(GetOwner());
 	m_pInputComp = GetOwner()->FindComponentByClass<UInputComponent>();	
 	m_PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>(); // Find physics handle
 	if (!m_PhysicsHandle)
 	{
 		UE_LOG(LogTemp, Error, TEXT("PhysicsHandle ERROR : Owner = %s"), *GetOwner()->GetName());
-	}	
-	if (m_pInputComp)
-	{
-		m_pInputComp->BindAction("Grab&Release", IE_Pressed, this, &UParcelGrabber::OnSetGrabPressed);
-		m_pInputComp->BindAction("Grab&Release", IE_Released, this, &UParcelGrabber::OnSetGrabRelease);		
 	}	
 }
 
@@ -153,6 +148,29 @@ void UParcelGrabber::YeetAction()
 			FVector YEET = m_PlayerCharacter->GetActorForwardVector();
 			YEET.Z += 0.5f;
 			thrownitem->AddImpulse(YEET * 1500.0f, NAME_None, true);
+			thrownitem->GetOwner()->FindComponentByClass<UBoxMechanics>()->bPickedUp = false;
+		}
+	}
+}
+
+void UParcelGrabber::DropAction()
+{
+	UPrimitiveComponent* thrownitem = m_PhysicsHandle->GrabbedComponent;
+	if (thrownitem)
+	{
+		if (m_PhysicsHandle->GrabbedComponent != nullptr)
+		{
+			// Decrement Box HP and set thrown true and held false
+			thrownitem->GetOwner()->FindComponentByClass<UBoxMechanics>()->iHealth--;
+			bHolding = false;
+
+			// Release the component and reset physics
+			m_PhysicsHandle->ReleaseComponent();
+			if (thrownitem)
+			{
+				thrownitem->SetSimulatePhysics(false);
+				thrownitem->SetSimulatePhysics(true);
+			}
 			thrownitem->GetOwner()->FindComponentByClass<UBoxMechanics>()->bPickedUp = false;
 		}
 	}
