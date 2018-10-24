@@ -77,7 +77,7 @@ void UParcelGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 				UE_LOG(LogTemp, Warning, TEXT("GrabbedComponent FName: %s"), *m_PhysicsHandle->GrabbedComponent->GetReadableName());				
 
 				// Set the targets location to the end of the raycast
-				m_PhysicsHandle->SetTargetLocation(FVector(LineTraceEnd.X, LineTraceEnd.Y, LineTraceEnd.Z + 50.0f));
+				m_PhysicsHandle->SetTargetLocation(FVector(LineTraceEnd.X, LineTraceEnd.Y, LineTraceEnd.Z + 60.0f));
 				m_PhysicsHandle->SetTargetRotation(m_PlayerCharacter->GetActorRotation());
 
 				// If the compenent we're holding is being destroyed, release it so we can go pick up another
