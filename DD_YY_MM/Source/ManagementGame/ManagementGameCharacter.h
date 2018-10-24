@@ -47,7 +47,12 @@ private:
 	void MoveRight(float AxisValue);
 	void CardinalMovement();
 
+	void OnSetGrabPressed();
+	void OnSetGrabRelease();
+
 	FVector MovementDirection;
 	float m_fMoveSpeed;
+
+	class UParcelGrabber* grabber;
 };
 

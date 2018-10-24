@@ -33,24 +33,24 @@ UParcelGrabber::UParcelGrabber()
 void UParcelGrabber::BeginPlay()
 {
 	Super::BeginPlay();
-	m_PlayerCharacter = GetWorld()->GetFirstPlayerController()->GetCharacter();
+	m_PlayerCharacter = Cast<ACharacter>(GetOwner());
 	m_pInputComp = GetOwner()->FindComponentByClass<UInputComponent>();	
 	m_PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>(); // Find physics handle
 	if (!m_PhysicsHandle)
 	{
 		UE_LOG(LogTemp, Error, TEXT("PhysicsHandle ERROR : Owner = %s"), *GetOwner()->GetName());
 	}	
-	if (m_pInputComp)
-	{
-		m_pInputComp->BindAction("Grab&Release", IE_Pressed, this, &UParcelGrabber::OnSetGrabPressed);
-		m_pInputComp->BindAction("Grab&Release", IE_Released, this, &UParcelGrabber::OnSetGrabRelease);		
-	}	
+	m_fThrowForce = m_fThrowForceDefault;
+	bFirstRelease = true;
+	bThrowCharging = false;
 }
 
 // Called every frame
 void UParcelGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	m_fDeltaTime = DeltaTime;
+	ChargeThrow();
 	if (m_PhysicsHandle)
 	{
 		/*DrawDebugLine(
@@ -92,25 +92,23 @@ void UParcelGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 				bHolding = false;
 			}
 		}
-
-		// Handle grabbing processes
-		if (bGrabbing)
+		else
 		{
-			Grab();
-		}
+			// Handle grabbing processes
+			if (bGrabbing)
+			{
+				Grab();
+			}
+		}		
 	}
 }
 
 void UParcelGrabber::OnSetGrabPressed()
 {	
 	// If holding a box, do yeet stuff
-	if (bHolding)
+	if (bHolding && bFirstRelease)
 	{
-		// Throw the box
-		YeetAction();
-
-		//plays the throwing sound
-		UGameplayStatics::PlaySound2D(m_PlayerCharacter, m_pYeetSound, 1.0f, 2.0f, 0.6f);
+		bThrowCharging = true;
 	}
 	// Otherwise, perform grabbing processes
 	else
@@ -124,7 +122,19 @@ void UParcelGrabber::OnSetGrabPressed()
 }
 void UParcelGrabber::OnSetGrabRelease()
 {
-	bGrabbing = false;	
+	if (bHolding && !bFirstRelease)
+	{
+		bFirstRelease = true;
+	}
+	else if (bHolding && bFirstRelease)
+	{
+		YeetAction();
+		//plays the throwing sound
+		UGameplayStatics::PlaySound2D(m_PlayerCharacter, m_pYeetSound, 1.0f, 2.0f, 0.6f);
+	}
+	bGrabbing = false;
+	bThrowCharging = false;
+	m_fThrowForce = m_fThrowForceDefault;
 }
 
 void UParcelGrabber::YeetAction()
@@ -137,6 +147,7 @@ void UParcelGrabber::YeetAction()
 			// Decrement Box HP and set thrown true and held false
 			thrownitem->GetOwner()->FindComponentByClass<UBoxMechanics>()->iHealth--;			
 			bHolding = false;
+			bGrabbing = false;
 			
 			// Release the component and reset physics
 			m_PhysicsHandle->ReleaseComponent();
@@ -149,7 +160,30 @@ void UParcelGrabber::YeetAction()
 			// Apply forces to the thrown item
 			FVector YEET = m_PlayerCharacter->GetActorForwardVector();
 			YEET.Z += 0.5f;
-			thrownitem->AddImpulse(YEET * 1500.0f, NAME_None, true);
+			thrownitem->AddImpulse(YEET * m_fThrowForce, NAME_None, true);
+			thrownitem->GetOwner()->FindComponentByClass<UBoxMechanics>()->bPickedUp = false;
+		}
+	}
+}
+
+void UParcelGrabber::DropAction()
+{
+	UPrimitiveComponent* thrownitem = m_PhysicsHandle->GrabbedComponent;
+	if (thrownitem)
+	{
+		if (m_PhysicsHandle->GrabbedComponent != nullptr)
+		{
+			// Decrement Box HP and set thrown true and held false
+			thrownitem->GetOwner()->FindComponentByClass<UBoxMechanics>()->iHealth--;
+			bHolding = false;
+
+			// Release the component and reset physics
+			m_PhysicsHandle->ReleaseComponent();
+			if (thrownitem)
+			{
+				thrownitem->SetSimulatePhysics(false);
+				thrownitem->SetSimulatePhysics(true);
+			}
 			thrownitem->GetOwner()->FindComponentByClass<UBoxMechanics>()->bPickedUp = false;
 		}
 	}
@@ -181,6 +215,7 @@ void UParcelGrabber::Grab()
 			);
 						
 			bHolding = true;
+			bFirstRelease = false;
 			//plays the grab sound
 			UGameplayStatics::PlaySound2D(m_PlayerCharacter, m_pGrabSound, 1.0f, 2.0f, 0.6f);
 		}
@@ -239,6 +274,17 @@ FHitResult UParcelGrabber::GetFirstPhysicsBodyInReach()
 	else
 	{
 		return FHitResult();
+	}
+}
+
+void UParcelGrabber::ChargeThrow()
+{
+	if (bThrowCharging)
+	{
+		if (m_fThrowForce < (m_fThrowForceDefault + m_fForceIncreasePersec * 3.0f))
+		{
+			m_fThrowForce += (m_fDeltaTime * m_fForceIncreasePersec);
+		}
 	}
 }
 

@@ -23,7 +23,12 @@ public:
 	void OnSetGrabPressed();
 	void OnSetGrabRelease();
 	void YeetAction();
-	
+	UFUNCTION(BlueprintCallable, Category = "BoxHandle")
+		void DropAction();
+	UPROPERTY(EditAnywhere, Category = "Throw Force")
+		float m_fThrowForceDefault = 1000.0f;
+	UPROPERTY(EditAnywhere, Category = "Throw Force")
+		float m_fForceIncreasePersec = 500.0f;
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -45,4 +50,12 @@ private:
 	USoundBase* m_pGrabSound;
 	float m_fReach = 150.0f; // grabber reach
 	float m_fHoldReach = 100.0f; // hold reach
+
+	float m_fDeltaTime = 0.0f;
+
+	float m_fThrowForce;
+	bool bFirstRelease;
+	bool bThrowCharging;
+
+	void ChargeThrow();
 };
