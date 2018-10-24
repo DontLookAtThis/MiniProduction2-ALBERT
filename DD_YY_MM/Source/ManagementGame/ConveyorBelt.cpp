@@ -11,10 +11,7 @@ UConveyorBelt::UConveyorBelt()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 	// ...
-	m_pMyMesh = GetOwner()->FindComponentByClass<UStaticMeshComponent>();
-	m_pMyMesh->bGenerateOverlapEvents = true;
-	m_pMyMesh->OnComponentBeginOverlap.AddDynamic(this, &UConveyorBelt::OnOverlapBegin);
-	m_pMyMesh->OnComponentEndOverlap.AddDynamic(this, &UConveyorBelt::OnOverlapEnd);
+
 }
 	
 
@@ -36,7 +33,10 @@ void UConveyorBelt::OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, clas
 void UConveyorBelt::BeginPlay()
 {
 	Super::BeginPlay();
-
+	m_pMyMesh = GetOwner()->FindComponentByClass<UStaticMeshComponent>();
+	m_pMyMesh->bGenerateOverlapEvents = true;
+	m_pMyMesh->OnComponentBeginOverlap.AddDynamic(this, &UConveyorBelt::OnOverlapBegin);
+	m_pMyMesh->OnComponentEndOverlap.AddDynamic(this, &UConveyorBelt::OnOverlapEnd);
 	// ...	
 	
 }
