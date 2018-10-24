@@ -81,7 +81,7 @@ void AManagementGameCharacter::MoveForward(float AxisValue)
 	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::X);
 	Direction *= AxisValue;
 	MovementDirection += Direction;
-	UE_LOG(LogTemp, Warning, TEXT("X %s"), *Direction.ToString());
+	//UE_LOG(LogTemp, Warning, TEXT("X %s"), *Direction.ToString());
 }
 
 void AManagementGameCharacter::MoveRight(float AxisValue)
@@ -90,7 +90,7 @@ void AManagementGameCharacter::MoveRight(float AxisValue)
 	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
 	Direction *= AxisValue;
 	MovementDirection += Direction;
-	UE_LOG(LogTemp, Warning, TEXT("Y %s"), *Direction.ToString());
+	//UE_LOG(LogTemp, Warning, TEXT("Y %s"), *Direction.ToString());
 }
 
 void AManagementGameCharacter::CardinalMovement()
