@@ -92,12 +92,14 @@ void UParcelGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 				bHolding = false;
 			}
 		}
-
-		// Handle grabbing processes
-		if (bGrabbing)
+		else
 		{
-			Grab();
-		}
+			// Handle grabbing processes
+			if (bGrabbing)
+			{
+				Grab();
+			}
+		}		
 	}
 }
 
@@ -137,6 +139,7 @@ void UParcelGrabber::YeetAction()
 			// Decrement Box HP and set thrown true and held false
 			thrownitem->GetOwner()->FindComponentByClass<UBoxMechanics>()->iHealth--;			
 			bHolding = false;
+			bGrabbing = false;
 			
 			// Release the component and reset physics
 			m_PhysicsHandle->ReleaseComponent();
