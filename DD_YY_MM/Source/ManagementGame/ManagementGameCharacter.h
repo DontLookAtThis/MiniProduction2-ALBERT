@@ -29,6 +29,8 @@ public:
 	//FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	///** Returns CursorToWorld subobject **/
 	//FORCEINLINE class UDecalComponent* GetCursorToWorld() { return CursorToWorld; }
+	UPROPERTY(BlueprintReadWrite)
+		bool bStunned;
 
 private:
 	///** Top down camera */
