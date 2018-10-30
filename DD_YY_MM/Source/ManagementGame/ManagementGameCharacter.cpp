@@ -66,6 +66,9 @@ void AManagementGameCharacter::BeginPlay()
 	Super::BeginPlay();
 	grabber = FindComponentByClass<UParcelGrabber>();
 	bStunned = false;
+	bSlowed = false;
+	fStunDuration = 0.0f;
+	fSlowDuraction = 0.0f;
 }
 
 // Called to bind functionality to input
@@ -102,7 +105,7 @@ void AManagementGameCharacter::MoveRight(float AxisValue)
 void AManagementGameCharacter::CardinalMovement()
 {
 	//UE_LOG(LogTemp, Warning, TEXT("Direction %s"), *MovementDirection.ToString());
-	AddMovementInput(MovementDirection, 1.0f);
+	AddMovementInput(MovementDirection, fMoveSpeed);
 	MovementDirection = FVector(0, 0, 0);
 }
 
@@ -130,7 +133,27 @@ void AManagementGameCharacter::Tick(float DeltaSeconds)
 	{
 		CardinalMovement();
 	}
-	
+	if (fStunDuration > 0.0f && bStunned)
+	{
+		fStunDuration -= DeltaSeconds;
+	}
+	else if (bStunned && fStunDuration <= 0.0f)
+	{
+		fStunDuration = 0.0f;
+		bStunned = false;
+	}
+
+	if (fSlowDuraction > 0.0f && bSlowed)
+	{
+		fSlowDuraction -= DeltaSeconds;
+	}
+	else if (bSlowed && fSlowDuraction <= 0.0f)
+	{
+		bSlowed = false;
+		fSlowDuraction = 0.0f;
+		fMoveSpeed = 1.0f;
+	}
+
 
 	//if (CursorToWorld != nullptr)
 	//{
