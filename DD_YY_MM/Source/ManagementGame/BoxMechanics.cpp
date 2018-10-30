@@ -68,6 +68,10 @@ void UBoxMechanics::BeginPlay()
 void UBoxMechanics::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);	
+
+	if (GetOwner()->GetActorLocation().Z <= -800.0f) {
+		GetOwner()->Destroy();
+	}
 }
 
 void UBoxMechanics::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
