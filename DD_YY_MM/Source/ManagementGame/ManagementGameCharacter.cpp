@@ -65,6 +65,7 @@ void AManagementGameCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	grabber = FindComponentByClass<UParcelGrabber>();
+	bStunned = false;
 }
 
 // Called to bind functionality to input
@@ -125,8 +126,11 @@ void AManagementGameCharacter::OnSetGrabRelease()
 void AManagementGameCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
-
-	CardinalMovement();
+	if (!bStunned)
+	{
+		CardinalMovement();
+	}
+	
 
 	//if (CursorToWorld != nullptr)
 	//{
