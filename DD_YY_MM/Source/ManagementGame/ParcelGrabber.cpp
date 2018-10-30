@@ -207,11 +207,11 @@ void UParcelGrabber::Grab()
 			ActorHit->FindComponentByClass<UBoxMechanics>()->bPickedUp = true;
 			ActorHit->FindComponentByClass<UStaticMeshComponent>()->SetSimulatePhysics(true);
 			UE_LOG(LogTemp, Warning, TEXT("Grabbing parcel."));
-			m_PhysicsHandle->GrabComponent(
+			m_PhysicsHandle->GrabComponentAtLocationWithRotation(
 				ComponentToGrab,
 				NAME_None,
 				ComponentToGrab->GetOwner()->GetActorLocation(),
-				true // allow rotation
+				ComponentToGrab->GetOwner()->GetActorRotation()
 			);
 						
 			bHolding = true;
