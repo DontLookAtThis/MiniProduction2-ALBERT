@@ -22,7 +22,8 @@ public:
 	int iGrabTimer;
 	void OnSetGrabPressed();
 	void OnSetGrabRelease();
-	void YeetAction();
+	void OnSetYeetPressed();
+	void OnSetYeetRelease();
 	UFUNCTION(BlueprintCallable, Category = "BoxHandle")
 		void DropAction();
 	UPROPERTY(EditAnywhere, Category = "Throw Force")

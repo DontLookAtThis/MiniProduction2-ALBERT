@@ -79,6 +79,8 @@ void AManagementGameCharacter::SetupPlayerInputComponent(class UInputComponent* 
 
 	PlayerInputComponent->BindAction("Grab&Release", IE_Pressed, this, &AManagementGameCharacter::OnSetGrabPressed);
 	PlayerInputComponent->BindAction("Grab&Release", IE_Released, this, &AManagementGameCharacter::OnSetGrabRelease);
+	PlayerInputComponent->BindAction("YeetAction", IE_Pressed, this, &AManagementGameCharacter::OnSetYeetPressed);
+	PlayerInputComponent->BindAction("YeetAction", IE_Released, this, &AManagementGameCharacter::OnSetYeetRelease);
 }
 
 void AManagementGameCharacter::MoveForward(float AxisValue)
@@ -114,6 +116,22 @@ void AManagementGameCharacter::OnSetGrabPressed()
 	}
 }
 
+void AManagementGameCharacter::OnSetYeetPressed()
+{
+	if (grabber)
+	{
+		grabber->OnSetYeetPressed();
+	}
+}
+
+void AManagementGameCharacter::OnSetYeetRelease()
+{
+	if (grabber)
+	{
+		grabber->OnSetYeetRelease();
+	}
+}
+
 void AManagementGameCharacter::OnSetGrabRelease()
 {
 	if (grabber)
@@ -121,7 +139,6 @@ void AManagementGameCharacter::OnSetGrabRelease()
 		grabber->OnSetGrabRelease();
 	}
 }
-
 
 void AManagementGameCharacter::Tick(float DeltaSeconds)
 {

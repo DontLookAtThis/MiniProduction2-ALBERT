@@ -95,9 +95,9 @@ void UParcelGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 void UParcelGrabber::OnSetGrabPressed()
 {	
 	// If holding a box, do yeet stuff
-	if (bHolding && bFirstRelease)
+	if (bHolding)
 	{
-		bThrowCharging = true;
+		DropAction();
 	}
 	// Otherwise, perform grabbing processes
 	else
@@ -110,35 +110,30 @@ void UParcelGrabber::OnSetGrabPressed()
 	
 }
 void UParcelGrabber::OnSetGrabRelease()
-{
-	if (bHolding && !bFirstRelease)
-	{
-		bFirstRelease = true;
-	}
-	else if (bHolding && bFirstRelease)
-	{
-		YeetAction();
-		//plays the throwing sound
-		UGameplayStatics::PlaySound2D(m_PlayerCharacter, m_pYeetSound, 1.0f, 2.0f, 0.6f);
-	}
+{	
 	bGrabbing = false;
-	bThrowCharging = false;
-	m_fThrowForce = m_fThrowForceDefault;
 }
 
-void UParcelGrabber::YeetAction()
+void UParcelGrabber::OnSetYeetPressed()
 {
+	bThrowCharging = true;
+}
+
+void UParcelGrabber::OnSetYeetRelease()
+{
+	bThrowCharging = false;
 	UPrimitiveComponent* thrownitem = m_PhysicsHandle->GrabbedComponent;
 	if (thrownitem)
-	{		
+	{
 		if (m_PhysicsHandle->GrabbedComponent != nullptr)
 		{
 			// Decrement Box HP and set thrown true and held false
+			UGameplayStatics::PlaySound2D(m_PlayerCharacter, m_pYeetSound, 1.0f, 2.0f, 0.6f);
 			thrownitem->GetOwner()->FindComponentByClass<UStaticMeshComponent>()->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2, ECollisionResponse::ECR_Block);
-			thrownitem->GetOwner()->FindComponentByClass<UBoxMechanics>()->iHealth--;			
+			thrownitem->GetOwner()->FindComponentByClass<UBoxMechanics>()->iHealth--;
 			bHolding = false;
 			bGrabbing = false;
-			
+
 			// Release the component and reset physics
 			m_PhysicsHandle->ReleaseComponent();
 			if (thrownitem)
@@ -154,6 +149,7 @@ void UParcelGrabber::YeetAction()
 			thrownitem->GetOwner()->FindComponentByClass<UBoxMechanics>()->bPickedUp = false;
 		}
 	}
+	m_fThrowForce = m_fThrowForceDefault;
 }
 
 void UParcelGrabber::DropAction()
@@ -163,9 +159,7 @@ void UParcelGrabber::DropAction()
 	{
 		if (m_PhysicsHandle->GrabbedComponent != nullptr)
 		{
-			thrownitem->GetOwner()->FindComponentByClass<UStaticMeshComponent>()->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2, ECollisionResponse::ECR_Block);
-			// Decrement Box HP and set thrown true and held false
-			thrownitem->GetOwner()->FindComponentByClass<UBoxMechanics>()->iHealth--;
+			thrownitem->GetOwner()->FindComponentByClass<UStaticMeshComponent>()->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2, ECollisionResponse::ECR_Block);			
 			bHolding = false;
 
 			// Release the component and reset physics
@@ -222,8 +216,6 @@ void UParcelGrabber::Grab()
 		}
 	}
 }
-
-
 
 FHitResult UParcelGrabber::GetFirstPhysicsBodyInReach()
 {
