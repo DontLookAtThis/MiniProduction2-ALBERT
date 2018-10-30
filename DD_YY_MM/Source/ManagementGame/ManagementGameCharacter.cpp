@@ -105,6 +105,7 @@ void AManagementGameCharacter::MoveRight(float AxisValue)
 void AManagementGameCharacter::CardinalMovement()
 {
 	//UE_LOG(LogTemp, Warning, TEXT("Direction %s"), *MovementDirection.ToString());
+	if (!(MovementDirection.Size() > 0.0f)) return;
 	AddMovementInput(MovementDirection, fMoveSpeed);
 	MovementDirection = FVector(0, 0, 0);
 }
@@ -149,6 +150,7 @@ void AManagementGameCharacter::Tick(float DeltaSeconds)
 	}
 	else if (bSlowed && fSlowDuraction <= 0.0f)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Slow reset"));
 		bSlowed = false;
 		fSlowDuraction = 0.0f;
 		fMoveSpeed = 1.0f;
