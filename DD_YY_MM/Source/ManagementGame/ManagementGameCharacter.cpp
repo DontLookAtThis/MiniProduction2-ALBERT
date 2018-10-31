@@ -66,6 +66,9 @@ void AManagementGameCharacter::BeginPlay()
 	Super::BeginPlay();
 	grabber = FindComponentByClass<UParcelGrabber>();
 	bStunned = false;
+	bSlowed = false;
+	fStunDuration = 0.0f;
+	fSlowDuraction = 0.0f;
 }
 
 // Called to bind functionality to input
@@ -79,6 +82,8 @@ void AManagementGameCharacter::SetupPlayerInputComponent(class UInputComponent* 
 
 	PlayerInputComponent->BindAction("Grab&Release", IE_Pressed, this, &AManagementGameCharacter::OnSetGrabPressed);
 	PlayerInputComponent->BindAction("Grab&Release", IE_Released, this, &AManagementGameCharacter::OnSetGrabRelease);
+	PlayerInputComponent->BindAction("YeetAction", IE_Pressed, this, &AManagementGameCharacter::OnSetYeetPressed);
+	PlayerInputComponent->BindAction("YeetAction", IE_Released, this, &AManagementGameCharacter::OnSetYeetRelease);
 }
 
 void AManagementGameCharacter::MoveForward(float AxisValue)
@@ -102,7 +107,8 @@ void AManagementGameCharacter::MoveRight(float AxisValue)
 void AManagementGameCharacter::CardinalMovement()
 {
 	//UE_LOG(LogTemp, Warning, TEXT("Direction %s"), *MovementDirection.ToString());
-	AddMovementInput(MovementDirection, 1.0f);
+	if (!(MovementDirection.Size() > 0.0f)) return;
+	AddMovementInput(MovementDirection, fMoveSpeed);
 	MovementDirection = FVector(0, 0, 0);
 }
 
@@ -114,6 +120,22 @@ void AManagementGameCharacter::OnSetGrabPressed()
 	}
 }
 
+void AManagementGameCharacter::OnSetYeetPressed()
+{
+	if (grabber)
+	{
+		grabber->OnSetYeetPressed();
+	}
+}
+
+void AManagementGameCharacter::OnSetYeetRelease()
+{
+	if (grabber)
+	{
+		grabber->OnSetYeetRelease();
+	}
+}
+
 void AManagementGameCharacter::OnSetGrabRelease()
 {
 	if (grabber)
@@ -122,7 +144,6 @@ void AManagementGameCharacter::OnSetGrabRelease()
 	}
 }
 
-
 void AManagementGameCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
@@ -130,7 +151,28 @@ void AManagementGameCharacter::Tick(float DeltaSeconds)
 	{
 		CardinalMovement();
 	}
-	
+	if (fStunDuration > 0.0f && bStunned)
+	{
+		fStunDuration -= DeltaSeconds;
+	}
+	else if (bStunned && fStunDuration <= 0.0f)
+	{
+		fStunDuration = 0.0f;
+		bStunned = false;
+	}
+
+	if (fSlowDuraction > 0.0f && bSlowed)
+	{
+		fSlowDuraction -= DeltaSeconds;
+	}
+	else if (bSlowed && fSlowDuraction <= 0.0f)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Slow reset"));
+		bSlowed = false;
+		fSlowDuraction = 0.0f;
+		fMoveSpeed = 1.0f;
+	}
+
 
 	//if (CursorToWorld != nullptr)
 	//{

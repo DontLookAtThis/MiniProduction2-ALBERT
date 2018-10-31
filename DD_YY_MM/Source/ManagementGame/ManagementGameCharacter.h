@@ -31,7 +31,14 @@ public:
 	//FORCEINLINE class UDecalComponent* GetCursorToWorld() { return CursorToWorld; }
 	UPROPERTY(BlueprintReadWrite)
 		bool bStunned;
-
+	UPROPERTY(BlueprintReadWrite)
+		bool bSlowed;
+	UPROPERTY(BlueprintReadWrite)
+		float fStunDuration;
+	UPROPERTY(BlueprintReadWrite)
+		float fSlowDuraction;
+	UPROPERTY(BlueprintReadWrite)
+		float fMoveSpeed = 1.0f;
 private:
 	///** Top down camera */
 	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -51,6 +58,8 @@ private:
 
 	void OnSetGrabPressed();
 	void OnSetGrabRelease();
+	void OnSetYeetPressed();
+	void OnSetYeetRelease();
 
 	FVector MovementDirection;
 	float m_fMoveSpeed;
