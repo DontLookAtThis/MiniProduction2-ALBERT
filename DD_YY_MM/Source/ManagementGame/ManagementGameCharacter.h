@@ -60,6 +60,7 @@ private:
 	void OnSetGrabRelease();
 	void OnSetYeetPressed();
 	void OnSetYeetRelease();
+	void OnSetJumpPressed();
 
 	FVector MovementDirection;
 	float m_fMoveSpeed;

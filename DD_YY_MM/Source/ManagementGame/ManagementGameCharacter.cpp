@@ -84,6 +84,7 @@ void AManagementGameCharacter::SetupPlayerInputComponent(class UInputComponent* 
 	PlayerInputComponent->BindAction("Grab&Release", IE_Released, this, &AManagementGameCharacter::OnSetGrabRelease);
 	PlayerInputComponent->BindAction("YeetAction", IE_Pressed, this, &AManagementGameCharacter::OnSetYeetPressed);
 	PlayerInputComponent->BindAction("YeetAction", IE_Released, this, &AManagementGameCharacter::OnSetYeetRelease);
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AManagementGameCharacter::OnSetJumpPressed);
 }
 
 void AManagementGameCharacter::MoveForward(float AxisValue)
@@ -128,6 +129,11 @@ void AManagementGameCharacter::OnSetYeetPressed()
 	}
 }
 
+void AManagementGameCharacter::OnSetJumpPressed()
+{
+	Jump();
+}
+
 void AManagementGameCharacter::OnSetYeetRelease()
 {
 	if (grabber)
@@ -146,7 +152,7 @@ void AManagementGameCharacter::OnSetGrabRelease()
 
 void AManagementGameCharacter::Tick(float DeltaSeconds)
 {
-    Super::Tick(DeltaSeconds);
+    Super::Tick(DeltaSeconds);	
 	if (!bStunned)
 	{
 		CardinalMovement();

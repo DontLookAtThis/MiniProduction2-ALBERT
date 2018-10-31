@@ -29,7 +29,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Throw Force")
 		float m_fThrowForceDefault = 1000.0f;
 	UPROPERTY(EditAnywhere, Category = "Throw Force")
-		float m_fForceIncreasePersec = 1000.0f;
+		float m_fForceIncreasePersec = 800.0f;
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
