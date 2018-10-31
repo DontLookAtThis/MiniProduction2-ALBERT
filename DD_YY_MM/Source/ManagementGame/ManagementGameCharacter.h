@@ -39,6 +39,8 @@ public:
 		float fSlowDuraction;
 	UPROPERTY(BlueprintReadWrite)
 		float fMoveSpeed = 1.0f;
+	UPROPERTY(BlueprintReadWrite)
+		FVector MovementDirection;
 private:
 	///** Top down camera */
 	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -61,7 +63,7 @@ private:
 	void OnSetYeetPressed();
 	void OnSetYeetRelease();
 
-	FVector MovementDirection;
+
 	float m_fMoveSpeed;
 
 	class UParcelGrabber* grabber;

@@ -62,13 +62,14 @@ void AFanTriggerVolume::ApplyForce(AActor * actor)
 		UE_LOG(LogTemp, Warning, TEXT("Pushing Player"));
 
 		UCharacterMovementComponent* movement = player->GetCharacterMovement();
-		movement->AddForce((GetActorForwardVector() * fForce * 2.0f));
+		player->MovementDirection += (GetActorForwardVector() * 0.5f);
+		//movement->AddForce((GetActorForwardVector() * fForce * 2.0f));
 	}
 	else if (actor->FindComponentByClass<UBoxMechanics>())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Pushing Box"));
 		UStaticMeshComponent* mesh = actor->FindComponentByClass<UStaticMeshComponent>();
-		mesh->AddForce((GetActorForwardVector() * fForce));
+		mesh->AddForce((GetActorForwardVector() * fForce * 2.0f));
 	}
 }
 
