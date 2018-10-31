@@ -58,6 +58,8 @@ private:
 
 	void OnSetGrabPressed();
 	void OnSetGrabRelease();
+	void OnSetYeetPressed();
+	void OnSetYeetRelease();
 
 	FVector MovementDirection;
 	float m_fMoveSpeed;
