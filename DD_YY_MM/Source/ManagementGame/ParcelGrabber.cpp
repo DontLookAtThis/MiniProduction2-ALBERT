@@ -195,12 +195,15 @@ void UParcelGrabber::Grab()
 				ActorHit->FindComponentByClass<UStaticMeshComponent>()->SetSimulatePhysics(true);		
 				ActorHit->FindComponentByClass<UStaticMeshComponent>()->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2, ECollisionResponse::ECR_Ignore);
 
+
+
 				UE_LOG(LogTemp, Warning, TEXT("Grabbing parcel."));				
 				m_PhysicsHandle->GrabComponentAtLocationWithRotation(
 					ComponentToGrab,
 					NAME_None,
 					ComponentToGrab->GetOwner()->GetActorLocation(),
-					FRotator()
+					ComponentToGrab->GetOwner()->GetActorRotation()
+
 				);
 
 				bHolding = true;
@@ -242,24 +245,27 @@ FHitResult UParcelGrabber::GetFirstPhysicsBodyInReach()
 		Shape,
 		FCollisionQueryParams::DefaultQueryParam			
 	);	
-
-	AActor* ActorHit = LineTraceHit.GetActor();
-	if (ActorHit->IsValidLowLevel() && LineTraceHit.Component.IsValid())
+	if (LineTraceHit.bBlockingHit)
 	{
-		if (ActorHit->FindComponentByClass<UBoxMechanics>())
+		AActor* ActorHit = LineTraceHit.GetActor();
+		if (ActorHit->IsValidLowLevel() && LineTraceHit.Component.IsValid())
 		{
-			UE_LOG(LogTemp, Warning, TEXT("%s hit."), *LineTraceHit.GetActor()->GetName());
-			return LineTraceHit;
+			if (ActorHit->FindComponentByClass<UBoxMechanics>())
+			{
+				UE_LOG(LogTemp, Warning, TEXT("%s hit."), *LineTraceHit.GetActor()->GetName());
+				return LineTraceHit;
+			}
+			else
+			{
+				return FHitResult();
+			}
 		}
 		else
 		{
 			return FHitResult();
 		}
-	}	
-	else
-	{
-		return FHitResult();
 	}
+	return FHitResult();
 }
 
 void UParcelGrabber::ChargeThrow()
