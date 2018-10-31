@@ -69,7 +69,7 @@ void UConveyorBelt::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 			FVector forward = GetOwner()->GetActorForwardVector();			
 
 			location -= forward * 1.5f;
-			FoundActors[i]->SetActorLocation(FVector(location.X, FoundActors[i]->GetActorLocation().Y, location.Z));
+			FoundActors[i]->SetActorLocation(FVector(location));
 		}		
 	}
 }
