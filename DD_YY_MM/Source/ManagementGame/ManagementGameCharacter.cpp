@@ -131,6 +131,7 @@ void AManagementGameCharacter::OnSetYeetPressed()
 
 void AManagementGameCharacter::OnSetJumpPressed()
 {
+	if (bStunned) return;
 	Jump();
 }
 
@@ -160,6 +161,7 @@ void AManagementGameCharacter::Tick(float DeltaSeconds)
 	if (fStunDuration > 0.0f && bStunned)
 	{
 		fStunDuration -= DeltaSeconds;
+		SetActorRotation(GetActorRotation() + FRotator(0.0f, 10.0f, 0.0f));
 	}
 	else if (bStunned && fStunDuration <= 0.0f)
 	{

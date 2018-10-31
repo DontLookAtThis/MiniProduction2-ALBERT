@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "ParcelGrabber.h"
 #include "ManagementGameCharacter.generated.h"
 
 UCLASS(Blueprintable)
@@ -41,6 +42,8 @@ public:
 		float fMoveSpeed = 1.0f;
 	UPROPERTY(BlueprintReadWrite)
 		FVector MovementDirection;
+
+
 private:
 	///** Top down camera */
 	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))

@@ -15,7 +15,7 @@ AForklift::AForklift()
 	ForkliftMesh->SetStaticMesh(ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("StaticMesh'/Game/Other_Assets/Mesh_Forklift.Mesh_Forklift'")).Object);
 	ForkliftMesh->SetWorldScale3D(FVector(1.5f, 1.5f, 1.5f));
 	RootComponent = ForkliftMesh;
-
+	m_fMoveTimer = 0.0f;
 	ClosestPlayer = nullptr;
 }
 
@@ -81,9 +81,23 @@ void AForklift::DrawDebug() {
 void AForklift::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	SeekPlayer();
 	DrawDebug();
+	float f;
+	FVector v;
+	GetActorLocation().ToDirectionAndLength(v, f);
+	if (f > 3000.0f) {
+		m_bMoving = false;
+	}
+	else if (m_bMoving) {
+		m_fMoveTimer = 0.0f;
+		SetActorLocation(GetActorLocation() + GetActorForwardVector() * 1000.0f * DeltaTime);
+	}
+	else if (!m_bMoving) {
+		SeekPlayer();
+		m_fMoveTimer += DeltaTime;
 
-	SetActorLocation(GetActorLocation() + GetActorForwardVector() * 500.0f * DeltaTime);
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("%f"), m_fMoveTimer);
 }
 

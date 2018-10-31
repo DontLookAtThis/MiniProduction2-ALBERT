@@ -25,6 +25,7 @@ protected:
 	void SeekPlayer();
 	void DrawDebug();
 	float m_fMoveTimer;
+	bool m_bMoving;
 
 	TArray<AActor*> ListOfPlayers;
 	AActor* ClosestPlayer;
