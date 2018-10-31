@@ -62,6 +62,7 @@ private:
 	void OnSetGrabRelease();
 	void OnSetYeetPressed();
 	void OnSetYeetRelease();
+	void OnSetJumpPressed();
 
 
 	float m_fMoveSpeed;

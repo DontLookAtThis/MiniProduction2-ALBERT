@@ -244,7 +244,7 @@ FHitResult UParcelGrabber::GetFirstPhysicsBodyInReach()
 	);	
 
 	AActor* ActorHit = LineTraceHit.GetActor();
-	if (ActorHit->IsValidLowLevel())
+	if (ActorHit->IsValidLowLevel() && LineTraceHit.Component.IsValid())
 	{
 		if (ActorHit->FindComponentByClass<UBoxMechanics>())
 		{
