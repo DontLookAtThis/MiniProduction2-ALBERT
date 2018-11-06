@@ -14,6 +14,7 @@
 #include "Components/StaticMeshComponent.h"
 #include <string>
 #include "Components/BoxComponent.h"
+#include "ManagementGameCharacter.h"
 
 // Sets default values for this component's properties
 UBoxMechanics::UBoxMechanics()
@@ -68,11 +69,34 @@ void UBoxMechanics::BeginPlay()
 void UBoxMechanics::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);	
+
+	if (GetOwner()->GetActorLocation().Z <= -800.0f) {
+		GetOwner()->Destroy();
+	}
 }
 
 void UBoxMechanics::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	float Speed;
+	FVector Temp;
+	GetOwner()->GetVelocity().ToDirectionAndLength(Temp, Speed);
+	if (bPickedUp) return;
+	if (AManagementGameCharacter* actorChar = Cast<AManagementGameCharacter>(OtherActor))
+	{
+		if (iBoxType == 0 && Speed > 200.0f)
+		{
+			actorChar->bStunned = true;
+			actorChar->fStunDuration = 2.0f;
+			actorChar->LaunchCharacter(FVector(0.0f, 0.0f, 1000.0f), true, true);
+		}
+		else if (iBoxType == 1 && Speed > 200.0f)
+		{
+			actorChar->bSlowed = true;
+			actorChar->fMoveSpeed = 0.5f;
+			actorChar->fSlowDuraction = 2.0f;
+		}
+	}
 	//m_pMyMesh->SetSimulatePhysics(false);
 }
 

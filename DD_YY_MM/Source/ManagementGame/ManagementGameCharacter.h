@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "ParcelGrabber.h"
 #include "ManagementGameCharacter.generated.h"
 
 UCLASS(Blueprintable)
@@ -29,6 +30,19 @@ public:
 	//FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	///** Returns CursorToWorld subobject **/
 	//FORCEINLINE class UDecalComponent* GetCursorToWorld() { return CursorToWorld; }
+	UPROPERTY(BlueprintReadWrite)
+		bool bStunned;
+	UPROPERTY(BlueprintReadWrite)
+		bool bSlowed;
+	UPROPERTY(BlueprintReadWrite)
+		float fStunDuration;
+	UPROPERTY(BlueprintReadWrite)
+		float fSlowDuraction;
+	UPROPERTY(BlueprintReadWrite)
+		float fMoveSpeed = 1.0f;
+	UPROPERTY(BlueprintReadWrite)
+		FVector MovementDirection;
+
 
 private:
 	///** Top down camera */
@@ -49,8 +63,11 @@ private:
 
 	void OnSetGrabPressed();
 	void OnSetGrabRelease();
+	void OnSetYeetPressed();
+	void OnSetYeetRelease();
+	void OnSetJumpPressed();
 
-	FVector MovementDirection;
+
 	float m_fMoveSpeed;
 
 	class UParcelGrabber* grabber;

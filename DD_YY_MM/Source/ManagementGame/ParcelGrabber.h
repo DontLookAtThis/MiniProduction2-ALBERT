@@ -22,13 +22,14 @@ public:
 	int iGrabTimer;
 	void OnSetGrabPressed();
 	void OnSetGrabRelease();
-	void YeetAction();
+	void OnSetYeetPressed();
+	void OnSetYeetRelease();
 	UFUNCTION(BlueprintCallable, Category = "BoxHandle")
 		void DropAction();
 	UPROPERTY(EditAnywhere, Category = "Throw Force")
 		float m_fThrowForceDefault = 1000.0f;
 	UPROPERTY(EditAnywhere, Category = "Throw Force")
-		float m_fForceIncreasePersec = 500.0f;
+		float m_fForceIncreasePersec = 800.0f;
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

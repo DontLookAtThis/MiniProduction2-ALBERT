@@ -54,7 +54,7 @@ void UConveyorBelt::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 	for (int i = 0; i < FoundActors.Num(); i++)
 	{
 		UBoxMechanics* boxptr = FoundActors[i]->FindComponentByClass<UBoxMechanics>();
-
+		
 		// Checking if the pointer is valid
 		if (FoundActors[i]->IsValidLowLevel())
 		{
@@ -69,7 +69,7 @@ void UConveyorBelt::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 			FVector forward = GetOwner()->GetActorForwardVector();			
 
 			location -= forward * 1.5f;
-			FoundActors[i]->SetActorLocation(location);
+			FoundActors[i]->SetActorLocation(FVector(location));
 		}		
 	}
 }
