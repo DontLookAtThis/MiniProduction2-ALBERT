@@ -222,16 +222,16 @@ FHitResult UParcelGrabber::GetFirstPhysicsBodyInReach()
 	FVector LineTraceEnd = PlayerPosition + PlayerForward * m_fReach;	
 
 	// Debug Box Trace
-	DrawDebugBox(
-		GetWorld(),
-		LineTraceEnd,
-		FVector(50, 50, 50),
-		FColor::Purple,
-		false,
-		-1,
-		0,
-		10.0f
-	);
+	//DrawDebugBox(
+	//	GetWorld(),
+	//	LineTraceEnd,
+	//	FVector(50, 50, 50),
+	//	FColor::Purple,
+	//	false,
+	//	-1,
+	//	0,
+	//	10.0f
+	//);
 
 	// Box-trace (ray-cast) out to reach distance
 	FHitResult LineTraceHit;
