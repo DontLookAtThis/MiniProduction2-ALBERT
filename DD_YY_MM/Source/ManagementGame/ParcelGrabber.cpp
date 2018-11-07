@@ -232,16 +232,17 @@ FHitResult UParcelGrabber::GetFirstPhysicsBodyInReach()
 
 	// Box-trace (ray-cast) out to reach distance
 	FHitResult LineTraceHit;
+
+	//// !!!! Ray trace is here !!!! /////
 	FCollisionShape Shape = FCollisionShape::MakeBox(FVector(50.0f, 50.0f, 50.0f));
 	GetWorld()->SweepSingleByObjectType(
 		LineTraceHit,
 		PlayerPosition,
 		LineTraceEnd,
-		FQuat(),
+		FQuat::Identity,
 		ECollisionChannel::ECC_PhysicsBody,
-		Shape,
-		FCollisionQueryParams::DefaultQueryParam			
-	);	
+		Shape			
+	);		
 
 	AActor* ActorHit = LineTraceHit.GetActor();
 	if (ActorHit->IsValidLowLevel() && LineTraceHit.Component.IsValid())
