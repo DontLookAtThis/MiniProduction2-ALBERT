@@ -57,7 +57,7 @@ void UParcelGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 		if (bHolding)
 		{
 			// Check if we're holding something			
-			if (m_PhysicsHandle->GrabbedComponent->IsValidLowLevel())
+			if (m_PhysicsHandle->GrabbedComponent != nullptr)
 			{
 				// Calculate the end of the raycast
 				FVector PlayerForward = m_PlayerCharacter->GetActorForwardVector();
@@ -73,7 +73,13 @@ void UParcelGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 				if (m_PhysicsHandle->GrabbedComponent->IsBeingDestroyed())
 				{
 					m_PhysicsHandle->ReleaseComponent();
+					bHolding = false;
 				}
+			}
+			else if (!m_PhysicsHandle->GrabbedComponent)
+			{
+				m_PhysicsHandle->ReleaseComponent();
+				bHolding = false;
 			}
 			else
 			{
@@ -89,6 +95,10 @@ void UParcelGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 				Grab();
 			}
 		}		
+	}
+	else
+	{
+		m_PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>(); // Find physics handle	
 	}
 }
 
@@ -200,7 +210,7 @@ void UParcelGrabber::Grab()
 					ComponentToGrab,
 					NAME_None,
 					ComponentToGrab->GetOwner()->GetActorLocation(),
-					FRotator()
+					FRotator::ZeroRotator
 				);
 
 				bHolding = true;
@@ -234,15 +244,22 @@ FHitResult UParcelGrabber::GetFirstPhysicsBodyInReach()
 	FHitResult LineTraceHit;
 
 	//// !!!! Ray trace is here !!!! /////
+	FQuat quaternion = FQuat::Identity;
 	FCollisionShape Shape = FCollisionShape::MakeBox(FVector(50.0f, 50.0f, 50.0f));
 	GetWorld()->SweepSingleByObjectType(
 		LineTraceHit,
 		PlayerPosition,
 		LineTraceEnd,
-		FQuat::Identity,
+		quaternion,
 		ECollisionChannel::ECC_PhysicsBody,
 		Shape			
 	);		
+
+	// Check the validity of hit
+	if (LineTraceHit.IsValidBlockingHit())
+	{
+		return FHitResult();
+	}
 
 	AActor* ActorHit = LineTraceHit.GetActor();
 	if (ActorHit->IsValidLowLevel() && LineTraceHit.Component.IsValid())
