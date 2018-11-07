@@ -17,6 +17,7 @@ AForkLiftAI::AForkLiftAI()
 	ForkliftMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Forklift Mesh"));
 	ForkliftMesh->SetStaticMesh(ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("StaticMesh'/Game/Other_Assets/Mesh_Forklift.Mesh_Forklift'")).Object);
 	ForkliftMesh->SetWorldScale3D(FVector(1.5f, 1.5f, 1.5f));
+	
 	m_fMoveTimeDelay = 2.0f;
 	m_fMoveTimer = m_fMoveTimeDelay + 1.0f;
 	fForce = 2000.0f;
@@ -26,6 +27,7 @@ AForkLiftAI::AForkLiftAI()
 	LowestSpeed = 100.0f;
 	CurrentSpeed = LowestSpeed;
 }
+
 
 
 // Called when the game starts or when spawned
@@ -136,6 +138,14 @@ void AForkLiftAI::OnOverlapEnd(UPrimitiveComponent * OverlappedComp, AActor * Ot
 }
 
 
+void AForkLiftAI::ResetTarget()
+{
+	ClosestPlayer = nullptr;
+	UE_LOG(LogTemp, Warning, TEXT("Resetting"));
+	m_bMoving = false;
+	m_bPositionSet = false;
+	SeekPlayer();
+}
 
 // Called every frame
 void AForkLiftAI::Tick(float DeltaTime)
@@ -158,11 +168,7 @@ void AForkLiftAI::Tick(float DeltaTime)
 
 	if (m_fMoveTimer > m_fMoveTimeDelay)
 	{
-		ClosestPlayer = nullptr;
-		UE_LOG(LogTemp, Warning, TEXT("Resetting"));
-		m_bMoving = false;
-		m_bPositionSet = false;
-		SeekPlayer();
+		ResetTarget();
 	}
 
 }

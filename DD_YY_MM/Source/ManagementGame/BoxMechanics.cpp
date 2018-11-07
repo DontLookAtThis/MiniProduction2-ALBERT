@@ -57,11 +57,11 @@ void UBoxMechanics::BeginPlay()
 {
 	Super::BeginPlay();
 	// ...
-	//m_pMyBoxCollider = GetOwner()->FindComponentByClass<UBoxComponent>();
+	m_pMyBoxCollider = GetOwner()->FindComponentByClass<UBoxComponent>();
 	m_pMyMesh = GetOwner()->FindComponentByClass<UStaticMeshComponent>();
-	m_pMyMesh->bGenerateOverlapEvents = true;
-	m_pMyMesh->OnComponentBeginOverlap.AddDynamic(this, &UBoxMechanics::OnOverlapBegin);
-	m_pMyMesh->OnComponentEndOverlap.AddDynamic(this, &UBoxMechanics::OnOverlapEnd);
+	m_pMyBoxCollider->bGenerateOverlapEvents = true;
+	m_pMyBoxCollider->OnComponentBeginOverlap.AddDynamic(this, &UBoxMechanics::OnOverlapBegin);
+	m_pMyBoxCollider->OnComponentEndOverlap.AddDynamic(this, &UBoxMechanics::OnOverlapEnd);
 	m_pMyMesh->SetSimulatePhysics(true);
 }
 
@@ -85,24 +85,37 @@ void UBoxMechanics::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, cl
 	if (bPickedUp) return;
 	if (AManagementGameCharacter* actorChar = Cast<AManagementGameCharacter>(OtherActor))
 	{
-		if (iBoxType == 0 && Speed > 500.0f)
+		if (LastHolder != actorChar)
 		{
-			actorChar->bStunned = true;
-			actorChar->fStunDuration = 1.65f;
-			actorChar->LaunchCharacter(FVector(0.0f, 0.0f, 800.0f), false, true);
+			if (iBoxType == 0 && Speed > 200.0f)
+			{
+				actorChar->bStunned = true;
+				actorChar->fStunDuration = 1.65f;
+				actorChar->LaunchCharacter(FVector(0.0f, 0.0f, 800.0f), false, true);
+			}
+			else if (iBoxType == 1 && Speed > 200.0f)
+			{
+				actorChar->bSlowed = true;
+				actorChar->fMoveSpeed = 0.5f;
+				actorChar->fSlowDuraction = 2.0f;
+			}
 		}
-		else if (iBoxType == 1 && Speed > 500.0f)
-		{
-			actorChar->bSlowed = true;
-			actorChar->fMoveSpeed = 0.5f;
-			actorChar->fSlowDuraction = 2.0f;
-		}
+
 	}
 	if (AForkLiftAI* ForkLift = Cast<AForkLiftAI>(OtherActor))
 	{
-		if (iBoxType == 0 && Speed > 300.0f)
+		UE_LOG(LogTemp, Warning, TEXT("Forklift Hit"));
+		if (iBoxType == 0 && Speed > 200.0f)
 		{
+
 			ForkLift->LastHit = LastHolder;
+			ForkLift->ResetTarget();
+		}
+		if (iBoxType == 1 && Speed > 200.0f)
+		{
+
+			ForkLift->LastHit = LastHolder;
+			ForkLift->CurrentSpeed = ForkLift->CurrentSpeed / 2.0f;
 		}
 	}
 	//m_pMyMesh->SetSimulatePhysics(false);
