@@ -152,8 +152,8 @@ void AForkLiftAI::Tick(float DeltaTime)
 		//SetActorLocation(GetActorLocation() + GetActorForwardVector() * 1000.0f * DeltaTime);
 	}
 	else if (!m_bMoving) {
-		ClosestPlayer = nullptr;
-		SeekPlayer();
+		//ClosestPlayer = nullptr;
+		//SeekPlayer();
 	}
 
 	if (m_fMoveTimer > m_fMoveTimeDelay)

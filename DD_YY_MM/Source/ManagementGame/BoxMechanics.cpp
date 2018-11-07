@@ -88,8 +88,8 @@ void UBoxMechanics::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, cl
 		if (iBoxType == 0 && Speed > 200.0f)
 		{
 			actorChar->bStunned = true;
-			actorChar->fStunDuration = 2.0f;
-			actorChar->LaunchCharacter(FVector(0.0f, 0.0f, 1000.0f), true, true);
+			actorChar->fStunDuration = 1.65f;
+			actorChar->LaunchCharacter(FVector(0.0f, 0.0f, 800.0f), true, true);
 		}
 		else if (iBoxType == 1 && Speed > 200.0f)
 		{

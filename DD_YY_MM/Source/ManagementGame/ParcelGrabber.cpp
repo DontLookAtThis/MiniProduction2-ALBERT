@@ -63,7 +63,7 @@ void UParcelGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 				FVector PlayerForward = m_PlayerCharacter->GetActorForwardVector();
 				FVector PlayerPosition = m_PlayerCharacter->GetActorLocation();
 				FVector LineTraceEnd = PlayerPosition + PlayerForward * m_fHoldReach;
-				UE_LOG(LogTemp, Warning, TEXT("GrabbedComponent FName: %s"), *m_PhysicsHandle->GrabbedComponent->GetReadableName());				
+				UE_LOG(LogTemp, Warning, TEXT("GrabbedComponent FName: %s"), *m_PhysicsHandle->GrabbedComponent->GetReadableName());
 
 				// Set the targets location to the end of the raycast
 				m_PhysicsHandle->SetTargetLocation(FVector(LineTraceEnd.X, LineTraceEnd.Y, LineTraceEnd.Z + 60.0f));
@@ -88,7 +88,7 @@ void UParcelGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 			{
 				Grab();
 			}
-		}		
+		}
 	}
 }
 
@@ -196,12 +196,15 @@ void UParcelGrabber::Grab()
 				ActorHit->FindComponentByClass<UStaticMeshComponent>()->SetSimulatePhysics(true);		
 				ActorHit->FindComponentByClass<UStaticMeshComponent>()->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2, ECollisionResponse::ECR_Ignore);
 
+
+
 				UE_LOG(LogTemp, Warning, TEXT("Grabbing parcel."));				
 				m_PhysicsHandle->GrabComponentAtLocationWithRotation(
 					ComponentToGrab,
 					NAME_None,
 					ComponentToGrab->GetOwner()->GetActorLocation(),
-					FRotator()
+					ComponentToGrab->GetOwner()->GetActorRotation()
+
 				);
 
 				bHolding = true;
@@ -219,7 +222,7 @@ FHitResult UParcelGrabber::GetFirstPhysicsBodyInReach()
 	FVector PlayerPosition = m_PlayerCharacter->GetActorLocation();	
 	FVector LineTraceEnd = PlayerPosition + PlayerForward * m_fReach;	
 
-	// Debug Box Trace
+	 //Debug Box Trace
 	DrawDebugBox(
 		GetWorld(),
 		LineTraceEnd,
@@ -243,24 +246,27 @@ FHitResult UParcelGrabber::GetFirstPhysicsBodyInReach()
 		Shape,
 		FCollisionQueryParams::DefaultQueryParam			
 	);	
-
-	AActor* ActorHit = LineTraceHit.GetActor();
-	if (ActorHit->IsValidLowLevel() && LineTraceHit.Component.IsValid())
+	if (LineTraceHit.bBlockingHit)
 	{
-		if (ActorHit->FindComponentByClass<UBoxMechanics>())
+		AActor* ActorHit = LineTraceHit.GetActor();
+		if (ActorHit->IsValidLowLevel() && LineTraceHit.Component.IsValid())
 		{
-			UE_LOG(LogTemp, Warning, TEXT("%s hit."), *LineTraceHit.GetActor()->GetName());
-			return LineTraceHit;
+			if (ActorHit->FindComponentByClass<UBoxMechanics>())
+			{
+				UE_LOG(LogTemp, Warning, TEXT("%s hit."), *LineTraceHit.GetActor()->GetName());
+				return LineTraceHit;
+			}
+			else
+			{
+				return FHitResult();
+			}
 		}
 		else
 		{
 			return FHitResult();
 		}
-	}	
-	else
-	{
-		return FHitResult();
 	}
+	return FHitResult();
 }
 
 void UParcelGrabber::ChargeThrow()

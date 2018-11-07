@@ -20,8 +20,11 @@ public:
 	UFUNCTION()
 		void OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(EditAnywhere)
 		float fForce;
+
+	UPROPERTY(EditAnywhere)
+		bool bActive;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

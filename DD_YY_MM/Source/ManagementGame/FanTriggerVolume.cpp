@@ -12,6 +12,8 @@ AFanTriggerVolume::AFanTriggerVolume()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	fForce = 1.0f;
+	bActive = false;
 
 }
 
@@ -47,12 +49,15 @@ void AFanTriggerVolume::BeginPlay()
 // Called every frame
 void AFanTriggerVolume::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);
-	for (int i = 0; i < actors.Num(); i++)
-	{
-		ApplyForce(actors[i]);
+	if (bActive) {
+		Super::Tick(DeltaTime);
+		for (int i = 0; i < actors.Num(); i++)
+			{
+				ApplyForce(actors[i]);
+			}
+		}
 	}
-}
+	
 
 void AFanTriggerVolume::ApplyForce(AActor * actor)
 {
@@ -61,7 +66,7 @@ void AFanTriggerVolume::ApplyForce(AActor * actor)
 		UE_LOG(LogTemp, Warning, TEXT("Pushing Player"));
 
 		UCharacterMovementComponent* movement = player->GetCharacterMovement();
-		player->MovementDirection += (GetActorForwardVector() * 0.5f);
+		player->MovementDirection += (GetActorForwardVector() * fForce * 0.5f);
 		//movement->AddForce((GetActorForwardVector() * fForce * 2.0f));
 	}
 	else if (actor->FindComponentByClass<UBoxMechanics>())
