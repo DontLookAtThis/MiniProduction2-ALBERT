@@ -39,6 +39,7 @@ void AFanTriggerVolume::OnOverlapEnd(UPrimitiveComponent * OverlappedComp, AActo
 void AFanTriggerVolume::BeginPlay()
 {
 	Super::BeginPlay();
+	fForce = 100000.0f;
 	m_myTriggerBox = FindComponentByClass<UBoxComponent>();
 	m_myTriggerBox->bGenerateOverlapEvents = true;
 	m_myTriggerBox->OnComponentBeginOverlap.AddDynamic(this, &AFanTriggerVolume::OnOverlapBegin);

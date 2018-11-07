@@ -31,8 +31,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Throw Force")
 		float m_fForceIncreasePersec = 800.0f;
 
-	UPROPERTY(EditAnywhere, Category = "Throw Force")
-	float m_fThrowForce;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Throw Force")
+		float m_fThrowForce;
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -53,7 +53,7 @@ private:
 	USoundBase* m_pYeetSound;
 	USoundBase* m_pGrabSound;
 	float m_fReach = 150.0f; // grabber reach
-	float m_fHoldReach = 100.0f; // hold reach
+	float m_fHoldReach = 150.0f; // hold reach
 
 	float m_fDeltaTime = 0.0f;
 

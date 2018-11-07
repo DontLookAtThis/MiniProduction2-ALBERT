@@ -57,13 +57,13 @@ void UParcelGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 		if (bHolding)
 		{
 			// Check if we're holding something			
-			if (m_PhysicsHandle->GrabbedComponent->IsValidLowLevel())
+			if (m_PhysicsHandle->GrabbedComponent != nullptr)
 			{
 				// Calculate the end of the raycast
 				FVector PlayerForward = m_PlayerCharacter->GetActorForwardVector();
 				FVector PlayerPosition = m_PlayerCharacter->GetActorLocation();
 				FVector LineTraceEnd = PlayerPosition + PlayerForward * m_fHoldReach;
-				UE_LOG(LogTemp, Warning, TEXT("GrabbedComponent FName: %s"), *m_PhysicsHandle->GrabbedComponent->GetReadableName());				
+				UE_LOG(LogTemp, Warning, TEXT("GrabbedComponent FName: %s"), *m_PhysicsHandle->GrabbedComponent->GetReadableName());
 
 				// Set the targets location to the end of the raycast
 				m_PhysicsHandle->SetTargetLocation(FVector(LineTraceEnd.X, LineTraceEnd.Y, LineTraceEnd.Z + 60.0f));
@@ -73,7 +73,13 @@ void UParcelGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 				if (m_PhysicsHandle->GrabbedComponent->IsBeingDestroyed())
 				{
 					m_PhysicsHandle->ReleaseComponent();
+					bHolding = false;
 				}
+			}
+			else if (!m_PhysicsHandle->GrabbedComponent)
+			{
+				m_PhysicsHandle->ReleaseComponent();
+				bHolding = false;
 			}
 			else
 			{
@@ -88,7 +94,11 @@ void UParcelGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 			{
 				Grab();
 			}
-		}		
+		}
+	}
+	else
+	{
+		m_PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>(); // Find physics handle	
 	}
 }
 
@@ -192,6 +202,7 @@ void UParcelGrabber::Grab()
 			if (ActorHit->FindComponentByClass<UBoxMechanics>())
 			{
 				ActorHit->FindComponentByClass<UBoxMechanics>()->bPickedUp = true;
+				ActorHit->FindComponentByClass<UBoxMechanics>()->LastHolder = GetOwner();
 				ActorHit->FindComponentByClass<UStaticMeshComponent>()->SetSimulatePhysics(true);		
 				ActorHit->FindComponentByClass<UStaticMeshComponent>()->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2, ECollisionResponse::ECR_Ignore);
 
@@ -202,8 +213,7 @@ void UParcelGrabber::Grab()
 					ComponentToGrab,
 					NAME_None,
 					ComponentToGrab->GetOwner()->GetActorLocation(),
-					ComponentToGrab->GetOwner()->GetActorRotation()
-
+					FRotator::ZeroRotator
 				);
 
 				bHolding = true;
@@ -221,31 +231,41 @@ FHitResult UParcelGrabber::GetFirstPhysicsBodyInReach()
 	FVector PlayerPosition = m_PlayerCharacter->GetActorLocation();	
 	FVector LineTraceEnd = PlayerPosition + PlayerForward * m_fReach;	
 
-	// Debug Box Trace
-	//DrawDebugBox(
-	//	GetWorld(),
-	//	LineTraceEnd,
-	//	FVector(50, 50, 50),
-	//	FColor::Purple,
-	//	false,
-	//	-1,
-	//	0,
-	//	10.0f
-	//);
+	 //Debug Box Trace
+	DrawDebugBox(
+		GetWorld(),
+		LineTraceEnd,
+		FVector(50, 50, 50),
+		FColor::Purple,
+		false,
+		-1,
+		0,
+		10.0f
+	);
 
 	// Box-trace (ray-cast) out to reach distance
 	FHitResult LineTraceHit;
+
+	//// !!!! Ray trace is here !!!! /////
+	FQuat quaternion = FQuat::Identity;
 	FCollisionShape Shape = FCollisionShape::MakeBox(FVector(50.0f, 50.0f, 50.0f));
 	GetWorld()->SweepSingleByObjectType(
 		LineTraceHit,
 		PlayerPosition,
 		LineTraceEnd,
-		FQuat(),
+		quaternion,
 		ECollisionChannel::ECC_PhysicsBody,
-		Shape,
-		FCollisionQueryParams::DefaultQueryParam			
-	);	
-	if (LineTraceHit.bBlockingHit)
+		Shape			
+	);		
+
+	// Check the validity of hit
+	if (LineTraceHit.IsValidBlockingHit())
+	{
+		return FHitResult();
+	}
+
+	AActor* ActorHit = LineTraceHit.GetActor();
+	if (ActorHit->IsValidLowLevel() && LineTraceHit.Component.IsValid())
 	{
 		AActor* ActorHit = LineTraceHit.GetActor();
 		if (ActorHit->IsValidLowLevel() && LineTraceHit.Component.IsValid())

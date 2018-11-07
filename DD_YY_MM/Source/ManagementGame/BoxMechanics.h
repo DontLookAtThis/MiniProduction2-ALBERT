@@ -18,6 +18,9 @@ public:
 	UBoxMechanics();
 	bool bOnConvey;
 	bool bPickedUp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		AActor* LastHolder;
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

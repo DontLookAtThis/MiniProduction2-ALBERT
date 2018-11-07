@@ -15,6 +15,7 @@
 #include <string>
 #include "Components/BoxComponent.h"
 #include "ManagementGameCharacter.h"
+#include "ForkLiftAI.h"
 
 // Sets default values for this component's properties
 UBoxMechanics::UBoxMechanics()
@@ -84,17 +85,24 @@ void UBoxMechanics::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, cl
 	if (bPickedUp) return;
 	if (AManagementGameCharacter* actorChar = Cast<AManagementGameCharacter>(OtherActor))
 	{
-		if (iBoxType == 0 && Speed > 200.0f)
+		if (iBoxType == 0 && Speed > 500.0f)
 		{
 			actorChar->bStunned = true;
 			actorChar->fStunDuration = 1.65f;
-			actorChar->LaunchCharacter(FVector(0.0f, 0.0f, 800.0f), true, true);
+			actorChar->LaunchCharacter(FVector(0.0f, 0.0f, 800.0f), false, true);
 		}
-		else if (iBoxType == 1 && Speed > 200.0f)
+		else if (iBoxType == 1 && Speed > 500.0f)
 		{
 			actorChar->bSlowed = true;
 			actorChar->fMoveSpeed = 0.5f;
 			actorChar->fSlowDuraction = 2.0f;
+		}
+	}
+	if (AForkLiftAI* ForkLift = Cast<AForkLiftAI>(OtherActor))
+	{
+		if (iBoxType == 0 && Speed > 300.0f)
+		{
+			ForkLift->LastHit = LastHolder;
 		}
 	}
 	//m_pMyMesh->SetSimulatePhysics(false);
