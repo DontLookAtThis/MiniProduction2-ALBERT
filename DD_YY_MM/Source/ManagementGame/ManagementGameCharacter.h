@@ -42,7 +42,7 @@ public:
 		float fMoveSpeed = 1.0f;
 	UPROPERTY(BlueprintReadWrite)
 		FVector MovementDirection;
-
+	class UParcelGrabber* grabber;
 
 private:
 	///** Top down camera */
@@ -70,6 +70,6 @@ private:
 
 	float m_fMoveSpeed;
 
-	class UParcelGrabber* grabber;
+
 };
 

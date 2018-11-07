@@ -192,6 +192,7 @@ void UParcelGrabber::Grab()
 			if (ActorHit->FindComponentByClass<UBoxMechanics>())
 			{
 				ActorHit->FindComponentByClass<UBoxMechanics>()->bPickedUp = true;
+				ActorHit->FindComponentByClass<UBoxMechanics>()->LastHolder = GetOwner();
 				ActorHit->FindComponentByClass<UStaticMeshComponent>()->SetSimulatePhysics(true);		
 				ActorHit->FindComponentByClass<UStaticMeshComponent>()->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2, ECollisionResponse::ECR_Ignore);
 

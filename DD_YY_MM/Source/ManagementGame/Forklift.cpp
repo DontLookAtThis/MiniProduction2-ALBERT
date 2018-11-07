@@ -91,6 +91,7 @@ void AForklift::Tick(float DeltaTime)
 	else if (m_bMoving) {
 		m_fMoveTimer = 0.0f;
 		SetActorLocation(GetActorLocation() + GetActorForwardVector() * 1000.0f * DeltaTime);
+		UE_LOG(LogTemp, Warning, TEXT("Seeking"));
 	}
 	else if (!m_bMoving) {
 		SeekPlayer();
@@ -98,6 +99,6 @@ void AForklift::Tick(float DeltaTime)
 
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("%f"), m_fMoveTimer);
+	//UE_LOG(LogTemp, Warning, TEXT("%f"), m_fMoveTimer);
 }
 
