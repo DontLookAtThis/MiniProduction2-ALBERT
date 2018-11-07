@@ -15,12 +15,14 @@ class MANAGEMENTGAME_API AForklift : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AForklift();
-
+	UPROPERTY(EditAnywhere)
+		UStaticMeshComponent* ForkliftMesh;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UStaticMeshComponent* ForkliftMesh;
+
+
 
 	void SeekPlayer();
 	void DrawDebug();
