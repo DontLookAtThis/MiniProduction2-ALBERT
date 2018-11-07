@@ -63,7 +63,7 @@ void UParcelGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 				FVector PlayerForward = m_PlayerCharacter->GetActorForwardVector();
 				FVector PlayerPosition = m_PlayerCharacter->GetActorLocation();
 				FVector LineTraceEnd = PlayerPosition + PlayerForward * m_fHoldReach;
-				UE_LOG(LogTemp, Warning, TEXT("GrabbedComponent FName: %s"), *m_PhysicsHandle->GrabbedComponent->GetReadableName());				
+				UE_LOG(LogTemp, Warning, TEXT("GrabbedComponent FName: %s"), *m_PhysicsHandle->GrabbedComponent->GetReadableName());
 
 				// Set the targets location to the end of the raycast
 				m_PhysicsHandle->SetTargetLocation(FVector(LineTraceEnd.X, LineTraceEnd.Y, LineTraceEnd.Z + 60.0f));
@@ -88,7 +88,7 @@ void UParcelGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 			{
 				Grab();
 			}
-		}		
+		}
 	}
 }
 
@@ -221,17 +221,17 @@ FHitResult UParcelGrabber::GetFirstPhysicsBodyInReach()
 	FVector PlayerPosition = m_PlayerCharacter->GetActorLocation();	
 	FVector LineTraceEnd = PlayerPosition + PlayerForward * m_fReach;	
 
-	// Debug Box Trace
-	//DrawDebugBox(
-	//	GetWorld(),
-	//	LineTraceEnd,
-	//	FVector(50, 50, 50),
-	//	FColor::Purple,
-	//	false,
-	//	-1,
-	//	0,
-	//	10.0f
-	//);
+	 //Debug Box Trace
+	DrawDebugBox(
+		GetWorld(),
+		LineTraceEnd,
+		FVector(50, 50, 50),
+		FColor::Purple,
+		false,
+		-1,
+		0,
+		10.0f
+	);
 
 	// Box-trace (ray-cast) out to reach distance
 	FHitResult LineTraceHit;

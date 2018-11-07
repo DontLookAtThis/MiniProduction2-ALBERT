@@ -31,8 +31,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Throw Force")
 		float m_fForceIncreasePersec = 800.0f;
 
-	UPROPERTY(EditAnywhere, Category = "Throw Force")
-	float m_fThrowForce;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Throw Force")
+		float m_fThrowForce;
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
