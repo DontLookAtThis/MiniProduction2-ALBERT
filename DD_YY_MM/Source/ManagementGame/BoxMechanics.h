@@ -40,8 +40,8 @@ public:
 		int32 iHealth = 1;
 	UPROPERTY(EditAnywhere)
 		int iBoxType;
-	UPROPERTY(EditAnywhere)
-		TSubclassOf<AActor> DestrucitbleBox;
+	/*UPROPERTY(EditAnywhere)
+		TSubclassOf<AActor> DestrucitbleBox;*/
 	int deathTimer;
 	UFUNCTION(BlueprintCallable, Category = "Break")
 	void BreakItem();
