@@ -9,6 +9,7 @@
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "HeadMountedDisplayFunctionLibrary.h"
+#include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include "Materials/Material.h"
 #include "Engine/World.h"
 #include "ParcelGrabber.h"
@@ -58,6 +59,9 @@ AManagementGameCharacter::AManagementGameCharacter()
 	// Activate ticking in order to update the cursor every frame.
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
+
+	//StarEmitter = CreateDefaultSubobject<UParticleSystem>(TEXT("Particle Emitter"));
+	StarEmitter = (ConstructorHelpers::FObjectFinder<UParticleSystem>(TEXT("ParticleSystem'/Game/VFX/VFX_Stun.VFX_Stun'")).Object);
 }
 
 
@@ -154,6 +158,7 @@ void AManagementGameCharacter::OnSetGrabRelease()
 void AManagementGameCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);	
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), StarEmitter, GetActorLocation());
 	if (!bStunned)
 	{
 		CardinalMovement();
