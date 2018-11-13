@@ -64,6 +64,7 @@ void UParcelGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 				// If the compenent we're holding is being destroyed, release it so we can go pick up another
 				if (m_PhysicsHandle->GrabbedComponent->IsBeingDestroyed())
 				{
+					m_PhysicsHandle->GrabbedComponent->bGenerateOverlapEvents = true;
 					m_PhysicsHandle->ReleaseComponent();
 					bHolding = false;
 				}	
@@ -82,6 +83,7 @@ void UParcelGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 
 			else if (!m_PhysicsHandle->GrabbedComponent)
 			{
+				m_PhysicsHandle->GrabbedComponent->bGenerateOverlapEvents = true;
 				m_PhysicsHandle->ReleaseComponent();
 				bHolding = false;
 			}
@@ -161,6 +163,7 @@ void UParcelGrabber::OnSetYeetRelease()
 			YEET.Z += 100.0f / m_fThrowForce;
 			thrownitem->AddImpulse(YEET * m_fThrowForce, NAME_None, true);
 			thrownitem->GetOwner()->FindComponentByClass<UBoxMechanics>()->bPickedUp = false;
+			thrownitem->GetOwner()->FindComponentByClass<UStaticMeshComponent>()->bGenerateOverlapEvents = true;
 		}
 	}
 	m_fThrowForce = m_fThrowForceDefault;
@@ -173,6 +176,8 @@ void UParcelGrabber::DropAction()
 	{
 		if (m_PhysicsHandle->GrabbedComponent != nullptr)
 		{
+			// Sets the collision presets back to what they were before the object was picked up
+			//thrownitem->GetOwner()->FindComponentByClass<UStaticMeshComponent>()->SetCollisionResponseToChannels(m_collisionProfile);
 			thrownitem->GetOwner()->FindComponentByClass<UStaticMeshComponent>()->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2, ECollisionResponse::ECR_Block);			
 			bHolding = false;
 
@@ -183,7 +188,8 @@ void UParcelGrabber::DropAction()
 				thrownitem->SetSimulatePhysics(false);
 				thrownitem->SetSimulatePhysics(true);
 			}
-			thrownitem->GetOwner()->FindComponentByClass<UBoxMechanics>()->bPickedUp = false;			
+			thrownitem->GetOwner()->FindComponentByClass<UBoxMechanics>()->bPickedUp = false;		
+			thrownitem->GetOwner()->FindComponentByClass<UStaticMeshComponent>()->bGenerateOverlapEvents = true;
 		}
 	}
 }
@@ -205,12 +211,14 @@ void UParcelGrabber::Grab()
 		{
 			if (ActorHit->FindComponentByClass<UBoxMechanics>())
 			{
+				// Holds the collision presets for the object that was just picked up
+				//m_collisionProfile = ActorHit->FindComponentByClass<UStaticMeshComponent>()->GetCollisionResponseToChannels();
+				
 				ActorHit->FindComponentByClass<UBoxMechanics>()->bPickedUp = true;
 				ActorHit->FindComponentByClass<UBoxMechanics>()->LastHolder = GetOwner();
-				ActorHit->FindComponentByClass<UStaticMeshComponent>()->SetSimulatePhysics(true);		
+				ActorHit->FindComponentByClass<UStaticMeshComponent>()->SetSimulatePhysics(true);					
 				ActorHit->FindComponentByClass<UStaticMeshComponent>()->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2, ECollisionResponse::ECR_Ignore);
-
-
+				ActorHit->FindComponentByClass<UStaticMeshComponent>()->bGenerateOverlapEvents = false;
 
 				UE_LOG(LogTemp, Warning, TEXT("Grabbing parcel."));				
 				m_PhysicsHandle->GrabComponentAtLocationWithRotation(
