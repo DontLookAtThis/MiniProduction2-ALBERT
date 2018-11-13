@@ -15,7 +15,7 @@ AForkLiftAI::AForkLiftAI()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	ForkliftMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Forklift Mesh"));
-	ForkliftMesh->SetStaticMesh(ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("StaticMesh'/Game/Other_Assets/Mesh_Forklift.Mesh_Forklift'")).Object);
+	ForkliftMesh->SetStaticMesh(ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("StaticMesh'/Game/Other_Mechanics/Forklift/Mesh_Forklift.Mesh_Forklift'")).Object);
 	ForkliftMesh->SetWorldScale3D(FVector(1.5f, 1.5f, 1.5f));
 	m_fMoveTimeDelay = 2.0f;
 	m_fMoveTimer = m_fMoveTimeDelay + 1.0f;
