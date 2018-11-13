@@ -158,7 +158,7 @@ void AManagementGameCharacter::OnSetGrabRelease()
 void AManagementGameCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);	
-	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), StarEmitter, GetActorLocation());
+	//UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), StarEmitter, GetActorLocation());
 	if (!bStunned)
 	{
 		CardinalMovement();
