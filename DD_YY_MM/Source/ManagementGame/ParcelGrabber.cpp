@@ -53,12 +53,20 @@ void UParcelGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 	ChargeThrow();
 	if (m_PhysicsHandle)
 	{
+
 		// Check if we're holding something
 		if (bHolding)
 		{
+			
 			// Check if we're holding something			
 			if (m_PhysicsHandle->GrabbedComponent != nullptr)
 			{
+				// If the compenent we're holding is being destroyed, release it so we can go pick up another
+				if (m_PhysicsHandle->GrabbedComponent->IsBeingDestroyed())
+				{
+					m_PhysicsHandle->ReleaseComponent();
+					bHolding = false;
+				}	
 				// Calculate the end of the raycast
 				FVector PlayerForward = m_PlayerCharacter->GetActorForwardVector();
 				FVector PlayerPosition = m_PlayerCharacter->GetActorLocation();
@@ -69,13 +77,9 @@ void UParcelGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 				m_PhysicsHandle->SetTargetLocation(FVector(LineTraceEnd.X, LineTraceEnd.Y, LineTraceEnd.Z + 60.0f));
 				m_PhysicsHandle->SetTargetRotation(m_PlayerCharacter->GetActorRotation());
 
-				// If the compenent we're holding is being destroyed, release it so we can go pick up another
-				if (m_PhysicsHandle->GrabbedComponent->IsBeingDestroyed())
-				{
-					m_PhysicsHandle->ReleaseComponent();
-					bHolding = false;
-				}
+
 			}
+
 			else if (!m_PhysicsHandle->GrabbedComponent)
 			{
 				m_PhysicsHandle->ReleaseComponent();

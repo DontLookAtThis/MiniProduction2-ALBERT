@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "ParcelGrabber.h"
+#include "Runtime/Engine/Classes/Particles/ParticleSystemComponent.h"
 #include "ManagementGameCharacter.generated.h"
 
 UCLASS(Blueprintable)
@@ -43,6 +44,10 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 		FVector MovementDirection;
 	class UParcelGrabber* grabber;
+
+	UPROPERTY(BlueprintReadWrite)
+		UParticleSystem* StarEmitter;
+
 
 private:
 	///** Top down camera */

@@ -134,16 +134,16 @@ void UBoxMechanics::BreakItem()
 	//}
 	//if (deathTimer <= 0)
 	//{
-		FActorSpawnParameters params;
-		params.Owner = GetOwner();
+	//	FActorSpawnParameters params;
+	//	params.Owner = GetOwner();
 
-		FRotator rotation = GetOwner()->GetActorRotation();
-		FVector location = GetOwner()->GetActorLocation();
+	//	FRotator rotation = GetOwner()->GetActorRotation();
+	//	FVector location = GetOwner()->GetActorLocation();
 
 
-		GetWorld()->SpawnActor<AActor>(DestrucitbleBox, location, rotation);
-		GetOwner()->Destroy();
-	//}
+	//	GetWorld()->SpawnActor<AActor>(DestrucitbleBox, location, rotation);
+	//	GetOwner()->Destroy();
+	////}
 }
 
 
