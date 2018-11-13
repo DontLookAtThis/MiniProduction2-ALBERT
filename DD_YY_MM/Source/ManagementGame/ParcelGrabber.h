@@ -52,8 +52,8 @@ private:
 	UInputComponent* m_pInputComp;
 	USoundBase* m_pYeetSound;
 	USoundBase* m_pGrabSound;
-	float m_fReach = 150.0f; // grabber reach
-	float m_fHoldReach = 150.0f; // hold reach
+	float m_fReach = 250.0f; // grabber reach
+	float m_fHoldReach = 10.0f; // hold reach
 
 	float m_fDeltaTime = 0.0f;
 
