@@ -31,7 +31,7 @@ AManagementGameCharacter::AManagementGameCharacter()
 	GetCharacterMovement()->bConstrainToPlane = true;
 	GetCharacterMovement()->bSnapToPlaneAtStart = true;
 	GetCharacterMovement()->bAllowPhysicsRotationDuringAnimRootMotion = false;
-
+	bInputEnabled = true;
 	// Create a camera boom...
 	//CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	//CameraBoom->SetupAttachment(RootComponent);
@@ -93,6 +93,7 @@ void AManagementGameCharacter::SetupPlayerInputComponent(class UInputComponent* 
 
 void AManagementGameCharacter::MoveForward(float AxisValue)
 {
+	if (!bInputEnabled) return;
 	// Find out which way is "forward" and record that the player wants to move that way.
 	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::X);
 	Direction *= AxisValue;
@@ -102,6 +103,7 @@ void AManagementGameCharacter::MoveForward(float AxisValue)
 
 void AManagementGameCharacter::MoveRight(float AxisValue)
 {
+	if (!bInputEnabled) return;
 	// Find out which way is "right" and record that the player wants to move that way.
 	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
 	Direction *= AxisValue;
@@ -119,6 +121,7 @@ void AManagementGameCharacter::CardinalMovement()
 
 void AManagementGameCharacter::OnSetGrabPressed()
 {
+	if (!bInputEnabled) return;
 	if(grabber)
 	{
 		grabber->OnSetGrabPressed();
@@ -127,6 +130,7 @@ void AManagementGameCharacter::OnSetGrabPressed()
 
 void AManagementGameCharacter::OnSetYeetPressed()
 {
+	if (!bInputEnabled) return;
 	if (grabber)
 	{
 		grabber->OnSetYeetPressed();
@@ -135,12 +139,14 @@ void AManagementGameCharacter::OnSetYeetPressed()
 
 void AManagementGameCharacter::OnSetJumpPressed()
 {
+	if (!bInputEnabled) return;
 	if (bStunned) return;
 	Jump();
 }
 
 void AManagementGameCharacter::OnSetYeetRelease()
 {
+	if (!bInputEnabled) return;
 	if (grabber)
 	{
 		grabber->OnSetYeetRelease();
@@ -149,6 +155,7 @@ void AManagementGameCharacter::OnSetYeetRelease()
 
 void AManagementGameCharacter::OnSetGrabRelease()
 {
+	if (!bInputEnabled) return;
 	if (grabber)
 	{
 		grabber->OnSetGrabRelease();
@@ -159,7 +166,7 @@ void AManagementGameCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);	
 	//UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), StarEmitter, GetActorLocation());
-	if (!bStunned)
+	if (!bStunned && bInputEnabled)
 	{
 		CardinalMovement();
 	}

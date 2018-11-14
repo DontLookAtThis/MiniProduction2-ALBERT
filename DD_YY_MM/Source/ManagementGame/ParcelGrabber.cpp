@@ -161,6 +161,7 @@ void UParcelGrabber::OnSetYeetRelease()
 			YEET.Z += 100.0f / m_fThrowForce;
 			thrownitem->AddImpulse(YEET * m_fThrowForce, NAME_None, true);
 			thrownitem->GetOwner()->FindComponentByClass<UBoxMechanics>()->bPickedUp = false;
+			thrownitem->GetOwner()->FindComponentByClass<UBoxMechanics>()->bThrown = true;
 		}
 	}
 	m_fThrowForce = m_fThrowForceDefault;
@@ -205,25 +206,28 @@ void UParcelGrabber::Grab()
 		{
 			if (ActorHit->FindComponentByClass<UBoxMechanics>())
 			{
-				ActorHit->FindComponentByClass<UBoxMechanics>()->bPickedUp = true;
-				ActorHit->FindComponentByClass<UBoxMechanics>()->LastHolder = GetOwner();
-				ActorHit->FindComponentByClass<UStaticMeshComponent>()->SetSimulatePhysics(true);		
-				ActorHit->FindComponentByClass<UStaticMeshComponent>()->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2, ECollisionResponse::ECR_Ignore);
+				if (ActorHit->FindComponentByClass<UBoxMechanics>()->bPickedUp == false)
+				{
+					ActorHit->FindComponentByClass<UBoxMechanics>()->bPickedUp = true;
+					ActorHit->FindComponentByClass<UBoxMechanics>()->LastHolder = GetOwner();
+					ActorHit->FindComponentByClass<UStaticMeshComponent>()->SetSimulatePhysics(true);
+					ActorHit->FindComponentByClass<UStaticMeshComponent>()->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2, ECollisionResponse::ECR_Ignore);
 
 
 
-				UE_LOG(LogTemp, Warning, TEXT("Grabbing parcel."));				
-				m_PhysicsHandle->GrabComponentAtLocationWithRotation(
-					ComponentToGrab,
-					NAME_None,
-					ComponentToGrab->GetOwner()->GetActorLocation(),
-					FRotator::ZeroRotator
-				);
+					UE_LOG(LogTemp, Warning, TEXT("Grabbing parcel."));
+					m_PhysicsHandle->GrabComponentAtLocationWithRotation(
+						ComponentToGrab,
+						NAME_None,
+						ComponentToGrab->GetOwner()->GetActorLocation(),
+						FRotator::ZeroRotator
+					);
 
-				bHolding = true;
-				bFirstRelease = false;
-				//plays the grab sound
-				UGameplayStatics::PlaySound2D(m_PlayerCharacter, m_pGrabSound, 1.0f, 2.0f, 0.6f);
+					bHolding = true;
+					bFirstRelease = false;
+					//plays the grab sound
+					UGameplayStatics::PlaySound2D(m_PlayerCharacter, m_pGrabSound, 1.0f, 2.0f, 0.6f);
+				}
 			}
 		}
 	}

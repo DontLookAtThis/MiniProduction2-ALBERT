@@ -28,6 +28,7 @@ UBoxMechanics::UBoxMechanics()
 	//GetOwner()->FindComponentByClass<UStaticMeshComponent>()->OnComponentBeginOverlap.AddDynamic(this, &UBoxMechanics::OnConveyor);
 	bOnConvey = false;
 	bPickedUp = false;
+	bThrown = false;
 	//if (iBoxType == 1)
 	//{
 	//	static ConstructorHelpers::FObjectFinder<UBlueprint> ItemBlueprint(TEXT("Blueprint'/Game/Parcel_Assets/Small_Box/DestrucibleFragileBox.DestrucibleFragileBox'"));
@@ -57,11 +58,11 @@ void UBoxMechanics::BeginPlay()
 {
 	Super::BeginPlay();
 	// ...
-	//m_pMyBoxCollider = GetOwner()->FindComponentByClass<UBoxComponent>();
+	m_pMyBoxCollider = GetOwner()->FindComponentByClass<UBoxComponent>();
 	m_pMyMesh = GetOwner()->FindComponentByClass<UStaticMeshComponent>();
-	m_pMyMesh->bGenerateOverlapEvents = true;
-	m_pMyMesh->OnComponentBeginOverlap.AddDynamic(this, &UBoxMechanics::OnOverlapBegin);
-	m_pMyMesh->OnComponentEndOverlap.AddDynamic(this, &UBoxMechanics::OnOverlapEnd);
+	m_pMyBoxCollider->bGenerateOverlapEvents = true;
+	m_pMyBoxCollider->OnComponentBeginOverlap.AddDynamic(this, &UBoxMechanics::OnOverlapBegin);
+	m_pMyBoxCollider->OnComponentEndOverlap.AddDynamic(this, &UBoxMechanics::OnOverlapEnd);
 	m_pMyMesh->SetSimulatePhysics(true);
 }
 
@@ -79,32 +80,48 @@ void UBoxMechanics::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 void UBoxMechanics::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+
 	float Speed;
 	FVector Temp;
 	GetOwner()->GetVelocity().ToDirectionAndLength(Temp, Speed);
 	if (bPickedUp) return;
+	if (!bThrown) return;
 	if (AManagementGameCharacter* actorChar = Cast<AManagementGameCharacter>(OtherActor))
 	{
-		if (iBoxType == 0 && Speed > 500.0f)
+		if (LastHolder != actorChar)
 		{
-			actorChar->bStunned = true;
-			actorChar->fStunDuration = 1.65f;
-			actorChar->LaunchCharacter(FVector(0.0f, 0.0f, 800.0f), false, true);
+			if (iBoxType == 0 && Speed > 200.0f)
+			{
+				actorChar->bStunned = true;
+				actorChar->fStunDuration = 1.65f;
+				actorChar->LaunchCharacter(FVector(0.0f, 0.0f, 800.0f), false, true);
+			}
+			else if (iBoxType == 1 && Speed > 200.0f)
+			{
+				actorChar->bSlowed = true;
+				actorChar->fMoveSpeed = 0.5f;
+				actorChar->fSlowDuraction = 2.0f;
+			}
 		}
-		else if (iBoxType == 1 && Speed > 500.0f)
-		{
-			actorChar->bSlowed = true;
-			actorChar->fMoveSpeed = 0.5f;
-			actorChar->fSlowDuraction = 2.0f;
-		}
+
 	}
 	if (AForkLiftAI* ForkLift = Cast<AForkLiftAI>(OtherActor))
 	{
-		if (iBoxType == 0 && Speed > 300.0f)
+		UE_LOG(LogTemp, Warning, TEXT("Forklift Hit"));
+		if (iBoxType == 0 && Speed > 200.0f)
 		{
+
 			ForkLift->LastHit = LastHolder;
+			ForkLift->ResetTarget();
+		}
+		if (iBoxType == 1 && Speed > 200.0f)
+		{
+
+			ForkLift->LastHit = LastHolder;
+			ForkLift->CurrentSpeed = ForkLift->CurrentSpeed / 2.0f;
 		}
 	}
+	bThrown = false;
 	//m_pMyMesh->SetSimulatePhysics(false);
 }
 
