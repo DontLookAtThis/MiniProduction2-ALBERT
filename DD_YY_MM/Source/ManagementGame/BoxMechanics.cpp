@@ -28,6 +28,7 @@ UBoxMechanics::UBoxMechanics()
 	//GetOwner()->FindComponentByClass<UStaticMeshComponent>()->OnComponentBeginOverlap.AddDynamic(this, &UBoxMechanics::OnConveyor);
 	bOnConvey = false;
 	bPickedUp = false;
+	bThrown = false;
 	//if (iBoxType == 1)
 	//{
 	//	static ConstructorHelpers::FObjectFinder<UBlueprint> ItemBlueprint(TEXT("Blueprint'/Game/Parcel_Assets/Small_Box/DestrucibleFragileBox.DestrucibleFragileBox'"));
@@ -79,10 +80,12 @@ void UBoxMechanics::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 void UBoxMechanics::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+
 	float Speed;
 	FVector Temp;
 	GetOwner()->GetVelocity().ToDirectionAndLength(Temp, Speed);
 	if (bPickedUp) return;
+	if (!bThrown) return;
 	if (AManagementGameCharacter* actorChar = Cast<AManagementGameCharacter>(OtherActor))
 	{
 		if (LastHolder != actorChar)
@@ -118,6 +121,7 @@ void UBoxMechanics::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, cl
 			ForkLift->CurrentSpeed = ForkLift->CurrentSpeed / 2.0f;
 		}
 	}
+	bThrown = false;
 	//m_pMyMesh->SetSimulatePhysics(false);
 }
 
