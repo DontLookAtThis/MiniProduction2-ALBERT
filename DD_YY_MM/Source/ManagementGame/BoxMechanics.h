@@ -17,7 +17,7 @@ public:
 	// Sets default values for this component's properties
 	UBoxMechanics();
 	bool bOnConvey;
-	bool bPickedUp;
+	bool bPickedUp;	
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		AActor* LastHolder;
@@ -40,6 +40,8 @@ public:
 		int32 iHealth = 1;
 	UPROPERTY(EditAnywhere)
 		int iBoxType;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool bBeingDestroyed;
 	/*UPROPERTY(EditAnywhere)
 		TSubclassOf<AActor> DestrucitbleBox;*/
 	int deathTimer;
