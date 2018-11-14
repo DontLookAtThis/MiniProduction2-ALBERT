@@ -46,7 +46,7 @@ public:
 	class UParcelGrabber* grabber;
 
 	UPROPERTY(BlueprintReadWrite)
-		UParticleSystem* StarEmitter;
+		UParticleSystem* StarEmitter = nullptr;
 
 
 private:
@@ -74,6 +74,7 @@ private:
 
 
 	float m_fMoveSpeed;
+	bool m_bEmitting;
 
 
 };

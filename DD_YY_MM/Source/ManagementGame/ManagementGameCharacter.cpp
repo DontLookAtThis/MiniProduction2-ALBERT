@@ -61,7 +61,8 @@ AManagementGameCharacter::AManagementGameCharacter()
 	PrimaryActorTick.bStartWithTickEnabled = true;
 
 	//StarEmitter = CreateDefaultSubobject<UParticleSystem>(TEXT("Particle Emitter"));
-	StarEmitter = (ConstructorHelpers::FObjectFinder<UParticleSystem>(TEXT("ParticleSystem'/Game/VFX/VFX_Stun.VFX_Stun'")).Object);
+	StarEmitter = (ConstructorHelpers::FObjectFinder<UParticleSystem>(TEXT("ParticleSystem'/Game/VFX/VFX_Stun.VFX_Stun'")).Object);	
+	m_bEmitting = false;
 }
 
 
@@ -157,19 +158,26 @@ void AManagementGameCharacter::OnSetGrabRelease()
 
 void AManagementGameCharacter::Tick(float DeltaSeconds)
 {
-    Super::Tick(DeltaSeconds);	
-	//UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), StarEmitter, GetActorLocation());
+    Super::Tick(DeltaSeconds);		
 	if (!bStunned)
 	{
 		CardinalMovement();
 	}
 	if (fStunDuration > 0.0f && bStunned)
 	{
+		// Spawn particle emitter		
+		if (!m_bEmitting)
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), StarEmitter, GetActorLocation() + FVector(0.0f, 0.0f, 100.0f));
+			m_bEmitting = true;
+		}
+		
 		fStunDuration -= DeltaSeconds;
 		SetActorRotation(GetActorRotation() + FRotator(0.0f, 10.0f, 0.0f));
 	}
 	else if (bStunned && fStunDuration <= 0.0f)
 	{
+		m_bEmitting = false;
 		fStunDuration = 0.0f;
 		bStunned = false;
 	}
