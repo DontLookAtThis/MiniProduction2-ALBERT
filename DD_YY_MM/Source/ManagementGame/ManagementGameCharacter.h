@@ -75,7 +75,7 @@ private:
 
 	float m_fMoveSpeed;
 	bool m_bEmitting;
-
+	USoundBase* m_headbuttReceive;
 
 };
 
