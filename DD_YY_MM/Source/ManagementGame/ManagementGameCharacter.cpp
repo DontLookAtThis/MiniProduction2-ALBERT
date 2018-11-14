@@ -12,6 +12,7 @@
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include "Materials/Material.h"
 #include "Engine/World.h"
+#include "Sound/SoundCue.h"
 #include "ParcelGrabber.h"
 
 
@@ -61,7 +62,13 @@ AManagementGameCharacter::AManagementGameCharacter()
 	PrimaryActorTick.bStartWithTickEnabled = true;
 
 	//StarEmitter = CreateDefaultSubobject<UParticleSystem>(TEXT("Particle Emitter"));
-	StarEmitter = (ConstructorHelpers::FObjectFinder<UParticleSystem>(TEXT("ParticleSystem'/Game/VFX/VFX_Stun.VFX_Stun'")).Object);
+	StarEmitter = (ConstructorHelpers::FObjectFinder<UParticleSystem>(TEXT("ParticleSystem'/Game/VFX/VFX_Stun.VFX_Stun'")).Object);	
+	m_bEmitting = false;
+
+	// Sounds
+	static ConstructorHelpers::FObjectFinder<USoundBase> m_headbuttAttack(
+		TEXT("SoundWave'/Game/Sound/RawSounds/NewSounds/HeadButt_Receive_NEW.HeadButt_Receive_NEW'")
+	);
 }
 
 
@@ -172,11 +179,19 @@ void AManagementGameCharacter::Tick(float DeltaSeconds)
 	}
 	if (fStunDuration > 0.0f && bStunned)
 	{
+		// Spawn particle emitter		
+		if (!m_bEmitting)
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), StarEmitter, GetActorLocation() + FVector(0.0f, 0.0f, 100.0f));
+			m_bEmitting = true;			
+		}
+		
 		fStunDuration -= DeltaSeconds;
 		SetActorRotation(GetActorRotation() + FRotator(0.0f, 10.0f, 0.0f));
 	}
 	else if (bStunned && fStunDuration <= 0.0f)
 	{
+		m_bEmitting = false;
 		fStunDuration = 0.0f;
 		bStunned = false;
 	}

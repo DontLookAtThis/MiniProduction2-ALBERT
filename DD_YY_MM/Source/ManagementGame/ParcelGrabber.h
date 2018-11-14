@@ -52,14 +52,11 @@ private:
 	UInputComponent* m_pInputComp;
 	USoundBase* m_pYeetSound;
 	USoundBase* m_pGrabSound;
+	//FCollisionResponseContainer m_collisionProfile;
 	float m_fReach = 250.0f; // grabber reach
 	float m_fHoldReach = 10.0f; // hold reach
-
 	float m_fDeltaTime = 0.0f;
-
-	
 	bool bFirstRelease;
 	bool bThrowCharging;
-
 	void ChargeThrow();
 };

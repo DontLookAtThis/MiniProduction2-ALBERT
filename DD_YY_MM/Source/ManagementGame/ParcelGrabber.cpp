@@ -53,42 +53,37 @@ void UParcelGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 	ChargeThrow();
 	if (m_PhysicsHandle)
 	{
-
 		// Check if we're holding something
 		if (bHolding)
-		{
-			
+		{			
 			// Check if we're holding something			
 			if (m_PhysicsHandle->GrabbedComponent != nullptr)
 			{
 				// If the compenent we're holding is being destroyed, release it so we can go pick up another
-				if (m_PhysicsHandle->GrabbedComponent->IsBeingDestroyed())
+				if (m_PhysicsHandle->GrabbedComponent->GetOwner()->FindComponentByClass<UBoxMechanics>()->bBeingDestroyed)
 				{
-					m_PhysicsHandle->ReleaseComponent();
-					bHolding = false;
+					UE_LOG(LogTemp, Warning, TEXT("ITS WORKING!!!"));
+					DropAction();
 				}	
+
 				// Calculate the end of the raycast
 				FVector PlayerForward = m_PlayerCharacter->GetActorForwardVector();
 				FVector PlayerPosition = m_PlayerCharacter->GetActorLocation();
 				FVector LineTraceEnd = PlayerPosition + PlayerForward * m_fHoldReach;
-				UE_LOG(LogTemp, Warning, TEXT("GrabbedComponent FName: %s"), *m_PhysicsHandle->GrabbedComponent->GetReadableName());
+				//UE_LOG(LogTemp, Warning, TEXT("GrabbedComponent FName: %s"), *m_PhysicsHandle->GrabbedComponent->GetReadableName());
 
 				// Set the targets location to the end of the raycast
 				m_PhysicsHandle->SetTargetLocation(FVector(LineTraceEnd.X, LineTraceEnd.Y, LineTraceEnd.Z + 60.0f));
 				m_PhysicsHandle->SetTargetRotation(m_PlayerCharacter->GetActorRotation());
-
-
 			}
-
 			else if (!m_PhysicsHandle->GrabbedComponent)
 			{
-				m_PhysicsHandle->ReleaseComponent();
-				bHolding = false;
+				DropAction();
 			}
 			else
 			{
 				// If holding is true but we're not holding anything, set it to false
-				bHolding = false;
+				DropAction();
 			}
 		}
 		else
@@ -162,6 +157,7 @@ void UParcelGrabber::OnSetYeetRelease()
 			thrownitem->AddImpulse(YEET * m_fThrowForce, NAME_None, true);
 			thrownitem->GetOwner()->FindComponentByClass<UBoxMechanics>()->bPickedUp = false;
 			thrownitem->GetOwner()->FindComponentByClass<UBoxMechanics>()->bThrown = true;
+			thrownitem->GetOwner()->FindComponentByClass<UStaticMeshComponent>()->bGenerateOverlapEvents = true;
 		}
 	}
 	m_fThrowForce = m_fThrowForceDefault;
@@ -169,14 +165,16 @@ void UParcelGrabber::OnSetYeetRelease()
 
 void UParcelGrabber::DropAction()
 {
+	bHolding = false;
 	UPrimitiveComponent* thrownitem = m_PhysicsHandle->GrabbedComponent;
 	if (thrownitem)
 	{
 		if (m_PhysicsHandle->GrabbedComponent != nullptr)
 		{
+			// Sets the collision presets back to what they were before the object was picked up
+			//thrownitem->GetOwner()->FindComponentByClass<UStaticMeshComponent>()->SetCollisionResponseToChannels(m_collisionProfile);
 			thrownitem->GetOwner()->FindComponentByClass<UStaticMeshComponent>()->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2, ECollisionResponse::ECR_Block);			
-			bHolding = false;
-
+			
 			// Release the component and reset physics
 			m_PhysicsHandle->ReleaseComponent();
 			if (thrownitem)
@@ -184,7 +182,8 @@ void UParcelGrabber::DropAction()
 				thrownitem->SetSimulatePhysics(false);
 				thrownitem->SetSimulatePhysics(true);
 			}
-			thrownitem->GetOwner()->FindComponentByClass<UBoxMechanics>()->bPickedUp = false;			
+			thrownitem->GetOwner()->FindComponentByClass<UBoxMechanics>()->bPickedUp = false;		
+			thrownitem->GetOwner()->FindComponentByClass<UStaticMeshComponent>()->bGenerateOverlapEvents = true;
 		}
 	}
 }
@@ -202,7 +201,7 @@ void UParcelGrabber::Grab()
 		auto ActorHit = HitResult.GetActor();
 
 		// If a hit was made, check that its a box and grab it
-		if (ActorHit->IsValidLowLevel() && ComponentToGrab->IsValidLowLevel())
+		if (ActorHit != nullptr && ComponentToGrab != nullptr)
 		{
 			if (ActorHit->FindComponentByClass<UBoxMechanics>())
 			{
@@ -273,10 +272,10 @@ FHitResult UParcelGrabber::GetFirstPhysicsBodyInReach()
 	}
 
 	AActor* ActorHit = LineTraceHit.GetActor();
-	if (ActorHit->IsValidLowLevel() && LineTraceHit.Component.IsValid())
+	if (ActorHit != nullptr && LineTraceHit.Component.IsValid())
 	{
 		AActor* ActorHit = LineTraceHit.GetActor();
-		if (ActorHit->IsValidLowLevel() && LineTraceHit.Component.IsValid())
+		if (ActorHit != nullptr && LineTraceHit.Component.IsValid())
 		{
 			if (ActorHit->FindComponentByClass<UBoxMechanics>())
 			{
