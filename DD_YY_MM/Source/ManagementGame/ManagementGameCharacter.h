@@ -33,6 +33,8 @@ public:
 	//FORCEINLINE class UDecalComponent* GetCursorToWorld() { return CursorToWorld; }
 	UPROPERTY(BlueprintReadWrite)
 		bool bStunned;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		bool bInputEnabled;
 	UPROPERTY(BlueprintReadWrite)
 		bool bSlowed;
 	UPROPERTY(BlueprintReadWrite)
