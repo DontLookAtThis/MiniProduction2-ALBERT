@@ -15,7 +15,7 @@ AForkLiftAI::AForkLiftAI()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	ForkliftMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Forklift Mesh"));
-	ForkliftMesh->SetStaticMesh(ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("StaticMesh'/Game/Other_Assets/Mesh_Forklift.Mesh_Forklift'")).Object);
+	ForkliftMesh->SetStaticMesh(ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("StaticMesh'/Game/Other_Mechanics/Forklift/Mesh_Forklift.Mesh_Forklift'")).Object);
 	ForkliftMesh->SetWorldScale3D(FVector(1.5f, 1.5f, 1.5f));
 	m_fMoveTimeDelay = 2.0f;
 	m_fMoveTimer = m_fMoveTimeDelay + 1.0f;
@@ -111,11 +111,9 @@ void AForkLiftAI::DrawDebug()
 }
 void AForkLiftAI::OnOverlapBegin(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("MAYBE ME"));
 	if (AManagementGameCharacter* player = Cast<AManagementGameCharacter>(OtherActor))
 	{
 		if (player->bStunned) return;
-		UE_LOG(LogTemp, Warning, TEXT("KILL ME"));
 		FVector LaunchDir = player->GetActorLocation() - this->GetActorLocation();
 		LaunchDir.Normalize();
 		LaunchDir.Z += 0.5f;
@@ -143,17 +141,14 @@ void AForkLiftAI::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	DrawDebug();
-	float f;
-	FVector v;
-	GetActorLocation().ToDirectionAndLength(v, f);
 	if (m_bMoving) {
-
 		m_fMoveTimer += DeltaTime;
-		//SetActorLocation(GetActorLocation() + GetActorForwardVector() * 1000.0f * DeltaTime);
 	}
-	else if (!m_bMoving) {
-		//ClosestPlayer = nullptr;
-		//SeekPlayer();
+
+	if (ClosestPlayer != nullptr && ClosestPlayer->GetActorLocation().Z < -80.0f) {
+		m_fMoveTimer = 0.0f;
+		LastHit = ClosestPlayer;
+		SeekPlayer();
 	}
 
 	if (m_fMoveTimer > m_fMoveTimeDelay)
