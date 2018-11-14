@@ -29,7 +29,6 @@ UBoxMechanics::UBoxMechanics()
 	bOnConvey = false;
 	bPickedUp = false;
 	bThrown = false;
-	bBeingDestroyed = false;
 	//if (iBoxType == 1)
 	//{
 	//	static ConstructorHelpers::FObjectFinder<UBlueprint> ItemBlueprint(TEXT("Blueprint'/Game/Parcel_Assets/Small_Box/DestrucibleFragileBox.DestrucibleFragileBox'"));
