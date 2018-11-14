@@ -18,6 +18,7 @@ public:
 	UBoxMechanics();
 	bool bOnConvey;
 	bool bPickedUp;
+	bool bThrown;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		AActor* LastHolder;
